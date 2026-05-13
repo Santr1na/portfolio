@@ -1,0 +1,47 @@
+<div class="shell wide">
+  <div class="admin-head">
+    <h1 class="page-h1">Вопросы пользователей</h1>
+    <form method="post" action="/admin/logout" class="inline-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-ghost btn-sm">Выйти</button>
+    </form>
+  </div>
+
+  <% if (query.err === 'noanswer') { %><div class="alert alert-error">Сначала сохраните ответ.</div><% } %>
+  <% if (query.err === 'long') { %><div class="alert alert-error">Ответ слишком длинный.</div><% } %>
+  <% if (query.err === 'slug') { %><div class="alert alert-error">Не удалось создать ссылку. Повторите.</div><% } %>
+  <% if (query.err === 'publish') { %><div class="alert alert-error">Не удалось опубликовать.</div><% } %>
+
+  <% if (!questions.length) { %>
+  <p class="muted">Пока нет вопросов.</p>
+  <% } %>
+
+  <% questions.forEach(function (q) { %>
+  <article class="admin-card" id="q-<%= q.id %>">
+    <div class="admin-meta">
+      <span class="tag tag-<%= q.status %>"><%= q.status %></span>
+      <time datetime="<%= new Date(q.created_at).toISOString() %>"><%= new Date(q.created_at).toLocaleString('ru-RU') %></time>
+      <% if (q.contact_email) { %><span class="muted"><%= q.contact_email %></span><% } %>
+    </div>
+    <div class="admin-q"><%= q.body %></div>
+
+    <form method="post" action="/admin/questions/<%= q.id %>/answer" class="stack-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label class="field">
+        <span>Ответ</span>
+        <textarea name="answer" rows="6" maxlength="20000" placeholder="Текст ответа"><%= q.answer || '' %></textarea>
+      </label>
+      <button type="submit" class="btn btn-primary btn-sm">Сохранить ответ</button>
+    </form>
+
+    <% if (q.status === 'published' && q.slug) { %>
+    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="/q/<%= q.slug %>">Открыть публикацию</a></p>
+    <% } else if (String(q.answer || '').trim()) { %>
+    <form method="post" action="/admin/questions/<%= q.id %>/publish" class="inline-form" style="margin-top:12px">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-ghost btn-sm">Выложить на отдельную страницу</button>
+    </form>
+    <% } %>
+  </article>
+  <% }) %>
+</div>

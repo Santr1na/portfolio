@@ -1,0 +1,25 @@
+<div class="shell narrow">
+  <h1 class="page-h1">Задать вопрос</h1>
+  <% if (sent) { %>
+  <div class="alert alert-success">Спасибо! Сообщение получено. Мы ответим, когда сможем — следите за публикациями на сайте.</div>
+  <% } else { %>
+  <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+  <p class="muted">Опишите вопрос по приложению. Защита от спама: лимит отправок с одного IP, проверка формы.</p>
+  <form method="post" action="/ask" class="stack-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="hp-field" aria-hidden="true">
+      <label for="website">Не заполняйте</label>
+      <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+    </div>
+    <label class="field">
+      <span>Ваш вопрос</span>
+      <textarea name="body" required minlength="12" maxlength="8000" rows="8" placeholder="Например: как синхронизировать избранное между устройствами?"></textarea>
+    </label>
+    <label class="field">
+      <span>Email для ответа (необязательно)</span>
+      <input type="email" name="contact_email" maxlength="320" placeholder="you@example.com">
+    </label>
+    <button type="submit" class="btn btn-primary">Отправить</button>
+  </form>
+  <% } %>
+</div>

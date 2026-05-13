@@ -1,0 +1,49 @@
+<div class="shell narrow">
+  <% if (thanks) { %>
+  <div class="alert alert-success">Спасибо за отклик!</div>
+  <% } %>
+  <% if (errEmpty) { %>
+  <div class="alert alert-error">Укажите оценку или короткий комментарий.</div>
+  <% } %>
+
+  <article class="article-block">
+    <p class="page-badge">Публикация</p>
+    <h1 class="page-h1">Вопрос и ответ</h1>
+    <div class="qa-block">
+      <h2 class="panel-h2">Вопрос</h2>
+      <div class="qa-body"><% article.body.split(/\r?\n/).forEach(function (line) { %><p><%= line || ' ' %></p><% }) %></div>
+    </div>
+    <div class="qa-block">
+      <h2 class="panel-h2">Ответ</h2>
+      <div class="qa-body"><% (article.answer || '').split(/\r?\n/).forEach(function (line) { %><p><%= line || ' ' %></p><% }) %></div>
+    </div>
+    <p class="muted" style="font-size:0.875rem">Опубликовано: <%= new Date(article.published_at).toLocaleString('ru-RU') %></p>
+  </article>
+
+  <section class="panel review-panel">
+    <h2 class="panel-h2">Оцените приложение</h2>
+    <p class="muted">Лучший отзыв — в Google Play: он помогает другим пользователям и развитию приложения.</p>
+    <a class="btn btn-primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer">Написать отзыв в Google Play</a>
+
+    <h3 class="subh">Короткий отклик здесь (по желанию)</h3>
+    <p class="muted small">Не публикуется на странице; используется для внутренней аналитики. Лимит отправок с одного IP.</p>
+    <form method="post" action="/q/<%= article.slug %>/feedback" class="stack-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="hp-field" aria-hidden="true">
+        <label for="company">Не заполняйте</label>
+        <input type="text" name="company" id="company" tabindex="-1" autocomplete="off">
+      </div>
+      <fieldset class="rating-row">
+        <legend>Оценка 1–5</legend>
+        <% for (var r = 1; r <= 5; r++) { %>
+        <label class="rating-opt"><input type="radio" name="rating" value="<%= r %>"> <span><%= r %></span></label>
+        <% } %>
+      </fieldset>
+      <label class="field">
+        <span>Комментарий</span>
+        <textarea name="comment" maxlength="1500" rows="4" placeholder="Что понравилось или что улучшить"></textarea>
+      </label>
+      <button type="submit" class="btn btn-ghost">Отправить отклик</button>
+    </form>
+  </section>
+</div>

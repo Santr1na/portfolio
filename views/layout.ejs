@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="<%= typeof htmlLang !== 'undefined' ? htmlLang : 'ru' %>">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0c0a14">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<title><%= title %> — GameSearch</title>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="/">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </span>
+      GameSearch
+    </a>
+    <nav class="nav" aria-label="Основное меню">
+      <a href="/" class="<%= path === '/' ? 'is-active' : '' %>">Главная</a>
+      <a href="/ask" class="<%= path === '/ask' ? 'is-active' : '' %>">Вопрос</a>
+      <a href="<%= playUrl %>" target="_blank" rel="noopener noreferrer">Google Play</a>
+      <a href="/delete-account" class="<%= path === '/delete-account' ? 'is-active' : '' %>">Delete account</a>
+      <a href="/admin" class="nav-muted">Admin</a>
+    </nav>
+  </div>
+</header>
+<main class="main-area">
+<div class="page-wrap">
+<%- body %>
+</div>
+</main>
+<% if (typeof pageScripts !== 'undefined' && pageScripts && pageScripts.length) { %>
+<% pageScripts.forEach(function (s) { %><script src="<%= s %>" defer></script><% }) %>
+<% } %>
+</body>
+</html>
