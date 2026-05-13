@@ -944,6 +944,7 @@ code {
 .carousel-viewport {
   position: relative;
   width: 100%;
+  min-height: min(52vh, 520px);
   overflow: hidden;
   border-radius: clamp(21px, 3vw, 29px);
   background: radial-gradient(ellipse 85% 75% at 50% 15%, #1a1530 0%, #06040d 68%);
@@ -1183,6 +1184,14 @@ code {
 
 .review-panel .btn-primary {
   margin-top: 14px;
+}
+
+.review-lead {
+  margin-bottom: 22px;
+}
+
+.review-panel--standalone {
+  margin-top: 28px;
 }
 
 .rating-row {

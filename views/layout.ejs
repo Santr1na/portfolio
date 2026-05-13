@@ -24,6 +24,7 @@
     <nav class="nav" aria-label="<%= t('layout_nav_aria') %>">
       <div class="nav-pills">
         <a href="<%= appUrl('/') %>" class="<%= path === '/' ? 'is-active' : '' %>"><%= t('nav_home') %></a>
+        <a href="<%= appUrl('/review') %>" class="<%= path === '/review' ? 'is-active' : '' %>"><%= t('nav_review') %></a>
         <a href="<%= appUrl('/ask') %>" class="<%= path === '/ask' ? 'is-active' : '' %>"><%= t('nav_ask') %></a>
         <a href="<%= appUrl('/delete-account') %>" class="<%= path === '/delete-account' ? 'is-active' : '' %>"><%= t('nav_delete') %></a>
       </div>

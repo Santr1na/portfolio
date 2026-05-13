@@ -65,6 +65,9 @@ function normalizeAppBase(raw) {
 
 const APP_BASE = normalizeAppBase(process.env.APP_BASE_PATH || "");
 
+/** Reserved slug for site-wide app rating/feedback (not a published Q&A slug). */
+const SITE_APP_REVIEW_SLUG = "__gs_site_review__";
+
 const app = express();
 app.locals.appBase = APP_BASE;
 app.set("trust proxy", 1);
@@ -281,6 +284,39 @@ function createPublicRouter(lang) {
     });
   });
 
+  r.get("/review", (req, res) => {
+    res.render("review", {
+      title: res.locals.t("review_title"),
+      thanks: req.query.thanks === "1",
+      errEmpty: req.query.err === "empty",
+      feedbackStats: getFeedbackStatsForSlug(SITE_APP_REVIEW_SLUG),
+      layout: "layout",
+    });
+  });
+
+  r.post("/review", feedbackLimiter, verifyCsrf, (req, res) => {
+    if (req.body.company && String(req.body.company).trim() !== "") {
+      return res.redirect(res.locals.appUrl("/review") + "?thanks=1");
+    }
+    let rating = req.body.rating != null && req.body.rating !== "" ? Number(req.body.rating) : null;
+    if (rating != null && (Number.isNaN(rating) || rating < 1 || rating > 5)) {
+      rating = null;
+    }
+    const comment = String(req.body.comment || "").trim().slice(0, 1500);
+    if (!rating && !comment) {
+      return res.redirect(res.locals.appUrl("/review") + "?err=empty");
+    }
+    addArticleFeedback({
+      id: nanoid(),
+      slug: SITE_APP_REVIEW_SLUG,
+      rating,
+      comment: comment || null,
+      createdAt: Date.now(),
+      ipHash: hashIp(req),
+    });
+    res.redirect(res.locals.appUrl("/review") + "?thanks=1");
+  });
+
   r.get("/q/:slug", (req, res) => {
     const row = getPublishedBySlug(req.params.slug);
     if (!row) {
@@ -396,6 +432,7 @@ adminRouter.get("/questions", requireAdmin, (req, res) => {
     title: res.locals.t("admin_panel_title"),
     questions,
     articleFeedback,
+    siteReviewSlug: SITE_APP_REVIEW_SLUG,
     query: req.query,
     layout: "layout",
   });

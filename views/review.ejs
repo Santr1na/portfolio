@@ -1,0 +1,50 @@
+<div class="shell narrow page-intro">
+  <p class="page-badge"><%= t('review_badge') %></p>
+  <h1 class="page-h1 page-h1--gradient"><%= t('review_h1') %></h1>
+  <% if (thanks) { %>
+  <div class="alert alert-success"><%= t('article_thanks') %></div>
+  <% } %>
+  <% if (errEmpty) { %>
+  <div class="alert alert-error"><%= t('article_err_empty') %></div>
+  <% } %>
+
+  <p class="lead review-lead"><%= t('review_lead') %></p>
+
+  <% if (typeof feedbackStats !== 'undefined' && feedbackStats && feedbackStats.totalCount > 0) { %>
+  <p class="muted article-stats-line">
+    <% if (feedbackStats.ratingCount > 0) { %>
+    <strong><%= t('article_stats_avg_short') %></strong> <%= feedbackStats.avgRating %> / 5 · <%= t('article_stats_ratings_n').replace('%s', String(feedbackStats.ratingCount)) %>
+    <% } %>
+    <% if (feedbackStats.totalCount > (feedbackStats.ratingCount || 0)) { %>
+    <% if (feedbackStats.ratingCount > 0) { %> · <% } %><%= t('article_stats_total_n').replace('%s', String(feedbackStats.totalCount)) %>
+    <% } %>
+  </p>
+  <% } %>
+
+  <section class="panel review-panel review-panel--standalone">
+    <h2 class="panel-h2"><%= t('article_review_h') %></h2>
+    <p class="muted"><%= t('article_review_p') %></p>
+    <a class="btn btn-primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer"><%= t('article_review_play') %></a>
+
+    <h3 class="subh"><%= t('review_form_h') %></h3>
+    <p class="muted small"><%= t('review_form_p') %></p>
+    <form method="post" action="<%= appUrl('/review') %>" class="stack-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="hp-field" aria-hidden="true">
+        <label for="company"><%= t('ask_hp_label') %></label>
+        <input type="text" name="company" id="company" tabindex="-1" autocomplete="off">
+      </div>
+      <fieldset class="rating-row">
+        <legend><%= t('article_rating_legend') %></legend>
+        <% for (var r = 1; r <= 5; r++) { %>
+        <label class="rating-opt"><input type="radio" name="rating" value="<%= r %>"> <span><%= r %></span></label>
+        <% } %>
+      </fieldset>
+      <label class="field">
+        <span><%= t('article_comment') %></span>
+        <textarea name="comment" maxlength="1500" rows="4" placeholder="<%= t('article_comment_ph') %>"></textarea>
+      </label>
+      <button type="submit" class="btn btn-ghost"><%= t('article_feedback_btn') %></button>
+    </form>
+  </section>
+</div>

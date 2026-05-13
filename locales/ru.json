@@ -1,6 +1,7 @@
 {
   "layout_nav_aria": "Основное меню",
   "nav_home": "Главная",
+  "nav_review": "Оценить",
   "nav_ask": "Вопрос",
   "nav_delete": "Удаление аккаунта",
   "footer_play": "Скачать в Google Play",
@@ -11,6 +12,7 @@
   "home_hero_title": "GameSearch — ваш каталог игр",
   "home_hero_lead": "Мобильное приложение для Android: библиотека, избранное, коллекции, рейтинги и лента новостей в тёмном интерфейсе. Для тех, кто следит за играми каждый день.",
   "home_btn_play": "Скачать в Google Play",
+  "home_btn_review": "Оценить на сайте",
   "home_btn_ask": "Задать вопрос",
 
   "home_about_h": "О приложении",
@@ -89,6 +91,13 @@
   "article_comment_ph": "Что понравилось или что улучшить",
   "article_feedback_btn": "Отправить отклик",
 
+  "review_title": "Оценить GameSearch",
+  "review_badge": "Отзыв",
+  "review_h1": "Как вам GameSearch?",
+  "review_lead": "Поставьте звёзды и короткий комментарий здесь на сайте или напишите полноценный отзыв в Google Play — нам важны оба варианта.",
+  "review_form_h": "На этом сайте",
+  "review_form_p": "Оценка и текст сохраняются для аналитики. Средние значения на странице обновляются по мере ответов.",
+
   "delete_title": "Удаление аккаунта GameSearch",
   "delete_badge": "Конфиденциальность",
   "delete_lead": "Запросите удаление аккаунта GameSearch в приложении или по email. Ниже — как это сделать и что происходит с данными.",
@@ -160,6 +169,7 @@
   "admin_feedback_th_slug": "Публикация",
   "admin_feedback_th_rating": "Звёзды",
   "admin_feedback_th_comment": "Комментарий",
+  "admin_feedback_app_marker": "GameSearch (сайт)",
 
   "status_open": "открыт",
   "status_answered": "есть ответ",

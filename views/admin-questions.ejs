@@ -68,7 +68,7 @@
           <% articleFeedback.forEach(function (fb) { %>
           <tr>
             <td><time datetime="<%= new Date(fb.created_at).toISOString() %>"><%= new Date(fb.created_at).toLocaleString(typeof dateLocale !== 'undefined' ? dateLocale : 'en-GB') %></time></td>
-            <td><code class="slug-cell"><%= fb.slug %></code></td>
+            <td><code class="slug-cell"><%= (typeof siteReviewSlug !== 'undefined' && fb.slug === siteReviewSlug) ? t('admin_feedback_app_marker') : fb.slug %></code></td>
             <td><%= fb.rating != null ? fb.rating : '—' %></td>
             <td class="comment-cell"><%= (fb.comment || '').slice(0, 400) %><%= (fb.comment && fb.comment.length > 400) ? '…' : '' %></td>
           </tr>

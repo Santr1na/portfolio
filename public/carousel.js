@@ -16,6 +16,29 @@
   var i = 0;
   var total = slides.length;
 
+  function measureStepPx() {
+    if (!viewport) return 0;
+    var w = viewport.clientWidth;
+    if (w > 1) return w;
+    var r = viewport.getBoundingClientRect();
+    return r.width > 1 ? r.width : 0;
+  }
+
+  /** Pin each slide to viewport width so flex % layout cannot collapse to zero width. */
+  function layoutSlides() {
+    var w = measureStepPx();
+    if (w < 2) return;
+    slides.forEach(function (sl) {
+      sl.style.flexBasis = w + "px";
+      sl.style.flexShrink = "0";
+      sl.style.flexGrow = "0";
+      sl.style.width = w + "px";
+      sl.style.minWidth = w + "px";
+      sl.style.maxWidth = w + "px";
+    });
+    track.style.width = total * w + "px";
+  }
+
   function setCaption() {
     var s = slides[i];
     if (!captionEl || !s) return;
@@ -51,17 +74,8 @@
     progressFill.style.width = ((i + 1) / total) * 100 + "%";
   }
 
-  /** translateX(%) is relative to the track width, not one slide — use px per slide. */
-  function slideStepPx() {
-    var el = slides[0];
-    if (!el) return 0;
-    var r = el.getBoundingClientRect();
-    if (r.width > 1) return r.width;
-    return viewport ? viewport.offsetWidth : 0;
-  }
-
   function applyTransform() {
-    var step = slideStepPx();
+    var step = measureStepPx();
     if (step > 0) {
       track.style.transform = "translateX(-" + i * step + "px)";
     }
@@ -131,6 +145,7 @@
   }
 
   function onResize() {
+    layoutSlides();
     applyTransform();
   }
   window.addEventListener("resize", onResize);
@@ -139,15 +154,29 @@
     ro.observe(viewport);
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
+  function boot() {
+    layoutSlides();
+    go(0);
+  }
+
+  function scheduleBoot() {
+    requestAnimationFrame(function () {
+      boot();
       requestAnimationFrame(function () {
-        go(0);
+        layoutSlides();
+        applyTransform();
       });
     });
-  } else {
-    requestAnimationFrame(function () {
-      go(0);
-    });
   }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", scheduleBoot);
+  } else {
+    scheduleBoot();
+  }
+
+  window.addEventListener("load", function () {
+    layoutSlides();
+    applyTransform();
+  });
 })();

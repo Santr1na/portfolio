@@ -1,6 +1,7 @@
 {
   "layout_nav_aria": "Main menu",
   "nav_home": "Home",
+  "nav_review": "Rate app",
   "nav_ask": "Ask a question",
   "nav_delete": "Delete account",
   "footer_play": "Get it on Google Play",
@@ -11,6 +12,7 @@
   "home_hero_title": "GameSearch — your game catalog",
   "home_hero_lead": "Android app: library, favorites, collections, ratings, and a news feed in a dark UI. Built for people who follow games every day.",
   "home_btn_play": "Get it on Google Play",
+  "home_btn_review": "Rate on this site",
   "home_btn_ask": "Ask a question",
 
   "home_about_h": "About the app",
@@ -89,6 +91,13 @@
   "article_comment_ph": "What you liked or what to improve",
   "article_feedback_btn": "Send feedback",
 
+  "review_title": "Rate GameSearch",
+  "review_badge": "Feedback",
+  "review_h1": "How do you like GameSearch?",
+  "review_lead": "Leave stars and a short note here, or write a full review on Google Play — both help us improve.",
+  "review_form_h": "On this website",
+  "review_form_p": "Your rating and comment are saved for analytics. Averages on this page update as more people respond.",
+
   "delete_title": "GameSearch account deletion",
   "delete_badge": "Privacy",
   "delete_lead": "Request removal of your GameSearch account from the app or by email. Below is how to do it and what happens to your data.",
@@ -160,6 +169,7 @@
   "admin_feedback_th_slug": "Post",
   "admin_feedback_th_rating": "Stars",
   "admin_feedback_th_comment": "Comment",
+  "admin_feedback_app_marker": "GameSearch (site)",
 
   "status_open": "open",
   "status_answered": "answered",
