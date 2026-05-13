@@ -927,31 +927,30 @@ code {
 
 .carousel-shell {
   position: relative;
-  padding: 1px;
-  border-radius: clamp(22px, 3vw, 30px);
-  background: linear-gradient(
-    145deg,
-    rgba(167, 139, 250, 0.45) 0%,
-    rgba(56, 189, 248, 0.25) 40%,
-    rgba(99, 102, 241, 0.35) 100%
-  );
+  width: 100%;
+  max-width: min(100%, 500px);
+  margin-inline: auto;
+  border-radius: clamp(20px, 2.5vw, 26px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(165deg, rgba(14, 12, 24, 0.95) 0%, rgba(8, 6, 14, 0.98) 100%);
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.5),
-    0 36px 72px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(139, 92, 246, 0.08);
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 22px 48px rgba(0, 0, 0, 0.42),
+    0 0 1px rgba(0, 0, 0, 0.6);
 }
 
 .carousel-viewport {
   position: relative;
-  width: 100%;
-  max-width: min(100%, 460px);
-  margin-inline: auto;
-  /* Tall stage: portrait shots fill height; narrow max-width on desktop avoids a tiny centered strip */
-  height: min(76vh, 720px);
-  min-height: min(52vh, 420px);
+  width: calc(100% - 6px);
+  margin: 3px;
+  height: min(66vh, 600px);
+  min-height: min(46vh, 380px);
   overflow: hidden;
-  border-radius: clamp(21px, 3vw, 29px);
-  background: radial-gradient(ellipse 85% 75% at 50% 15%, #1a1530 0%, #06040d 68%);
+  border-radius: clamp(19px, 2.3vw, 25px);
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%, rgba(99, 102, 241, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 70% at 50% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 55%),
+    linear-gradient(180deg, #14111f 0%, #0a0814 55%, #06040d 100%);
   touch-action: pan-y pinch-zoom;
 }
 
@@ -961,7 +960,9 @@ code {
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   z-index: 2;
 }
 
@@ -982,7 +983,7 @@ code {
   width: 100%;
   box-sizing: border-box;
   margin: 0;
-  padding: clamp(8px, 1.8vw, 16px) clamp(8px, 2.5vw, 20px);
+  padding: clamp(12px, 2.2vw, 20px) clamp(12px, 2.8vw, 22px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -997,22 +998,20 @@ code {
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: clamp(12px, 2vw, 16px);
+  border-radius: 14px;
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.2),
-    0 28px 56px rgba(0, 0, 0, 0.55),
-    0 0 0 1px rgba(255, 255, 255, 0.08);
-  transition: transform var(--carousel-dur) var(--carousel-ease);
+    0 12px 32px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  transition:
+    transform var(--carousel-dur) var(--carousel-ease),
+    box-shadow var(--carousel-dur) var(--carousel-ease);
 }
 
 .carousel-slide.is-active img {
-  transform: scale(1.02);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .carousel-slide.is-active img {
-    transform: none;
-  }
+  transform: none;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.07);
 }
 
 .carousel-fab {
@@ -1020,33 +1019,35 @@ code {
   top: 50%;
   transform: translateY(-50%);
   z-index: 4;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(8, 6, 16, 0.55);
-  backdrop-filter: blur(14px);
-  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 8, 18, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(245, 242, 255, 0.92);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .carousel-fab:hover {
-  background: rgba(34, 211, 238, 0.18);
-  border-color: rgba(34, 211, 238, 0.45);
-  color: #a5f3fc;
+  background: rgba(24, 20, 38, 0.78);
+  border-color: rgba(167, 139, 250, 0.35);
+  color: var(--text);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .carousel-prev {
-  left: clamp(10px, 2.5vw, 20px);
+  left: clamp(8px, 2vw, 16px);
 }
 
 .carousel-next {
-  right: clamp(10px, 2.5vw, 20px);
+  right: clamp(8px, 2vw, 16px);
 }
 
 .carousel-meta {
@@ -1054,15 +1055,17 @@ code {
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-top: 18px;
+  margin-top: 22px;
+  padding-inline: clamp(0px, 1vw, 6px);
   flex-wrap: wrap;
 }
 
 .carousel-caption {
   margin: 0;
   font-weight: 600;
-  font-size: 1.02rem;
-  letter-spacing: -0.02em;
+  font-size: 0.98rem;
+  letter-spacing: -0.018em;
+  line-height: 1.45;
   color: var(--text);
 }
 
@@ -1089,7 +1092,7 @@ code {
 
 .carousel-counter em {
   font-style: normal;
-  color: var(--cyan);
+  color: var(--accent);
 }
 
 .carousel-progress {
@@ -1104,7 +1107,7 @@ code {
   height: 100%;
   width: 0%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #a78bfa, #38bdf8, #22d3ee);
+  background: linear-gradient(90deg, #9d87f0 0%, #7c6ae0 100%);
   transition: width var(--carousel-dur) var(--carousel-ease);
 }
 
@@ -1132,8 +1135,8 @@ code {
 
 .carousel-seg[aria-current="true"] {
   height: 5px;
-  background: linear-gradient(90deg, #a78bfa, #22d3ee);
-  box-shadow: 0 0 18px rgba(34, 211, 238, 0.35);
+  background: linear-gradient(90deg, rgba(196, 181, 253, 0.95) 0%, rgba(139, 92, 246, 0.85) 100%);
+  box-shadow: none;
 }
 
 .article-hero {
