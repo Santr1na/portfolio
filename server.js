@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
@@ -68,6 +69,59 @@ const APP_BASE = normalizeAppBase(process.env.APP_BASE_PATH || "");
 /** Reserved slug for site-wide app rating/feedback (not a published Q&A slug). */
 const SITE_APP_REVIEW_SLUG = "__gs_site_review__";
 
+const imagesDir = path.join(__dirname, "images");
+
+function forwardedAssetBase(req) {
+  if (APP_BASE) return APP_BASE;
+  const raw = String(req.get("x-forwarded-prefix") || "").trim();
+  if (!raw || raw === "/") return "";
+  const n = normalizeAppBase(raw);
+  if (!/^\/[A-Za-z0-9/_-]{1,80}$/.test(n)) return "";
+  return n;
+}
+
+function collectImageRouteBases() {
+  const bases = new Set();
+  bases.add("");
+  if (APP_BASE) bases.add(APP_BASE);
+  String(process.env.IMAGE_ASSET_BASES || "")
+    .split(/[,\s]+/)
+    .map((s) => normalizeAppBase(s))
+    .filter(Boolean)
+    .forEach((b) => bases.add(b));
+  return bases;
+}
+
+function registerImageAndFaviconRoutes(appInstance) {
+  const bases = collectImageRouteBases();
+  const iconFile = path.join(imagesDir, "ic_launcher_background.png");
+
+  function sendImage(req, res, next) {
+    const file = req.params.file;
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(file)) return next();
+    const fp = path.join(imagesDir, file);
+    fs.stat(fp, (err, st) => {
+      if (err || !st.isFile()) return next();
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      res.sendFile(fp, (e2) => (e2 ? next(e2) : undefined));
+    });
+  }
+
+  bases.forEach((base) => {
+    const prefix = base ? `${base}/images` : "/images";
+    appInstance.get(`${prefix}/:file`, sendImage);
+    const favPath = base ? `${base}/favicon.ico` : "/favicon.ico";
+    appInstance.get(favPath, (req, res, next) => {
+      fs.stat(iconFile, (err, st) => {
+        if (err || !st.isFile()) return next();
+        res.type("png");
+        res.setHeader("Cache-Control", "public, max-age=86400");
+        res.sendFile(iconFile, (e2) => (e2 ? next(e2) : undefined));
+      });
+    });
+  });
+}
+
 const app = express();
 app.locals.appBase = APP_BASE;
 app.set("trust proxy", 1);
@@ -120,7 +174,8 @@ app.use((req, res, next) => {
   }
   res.locals.csrfToken = req.session._csrf;
   res.locals.playUrl = PLAY_URL;
-  res.locals.assetUrl = (p) => i18n.assetUrl(APP_BASE, p);
+  const assetBase = APP_BASE || forwardedAssetBase(req);
+  res.locals.assetUrl = (p) => i18n.assetUrl(assetBase, p);
   next();
 });
 
@@ -154,6 +209,8 @@ const feedbackLimiter = rateLimit({
 });
 
 app.use(express.urlencoded({ extended: true, limit: "48kb" }));
+
+registerImageAndFaviconRoutes(app);
 
 function verifyCsrf(req, res, next) {
   const tfn = res.locals.t || ((k) => i18n.t(i18n.DEFAULT_LOCALE, k));
@@ -482,7 +539,6 @@ adminRouter.post("/questions/:id/publish", requireAdmin, verifyCsrf, (req, res) 
 app.use("/admin", adminRouter);
 
 const publicDir = path.join(__dirname, "public");
-const imagesDir = path.join(__dirname, "images");
 app.use(express.static(publicDir));
 app.use("/images", express.static(imagesDir));
 if (APP_BASE) {
