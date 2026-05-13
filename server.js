@@ -417,6 +417,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
   console.log("GameSearch site http://%s:%s/", HOST, PORT);
+});
+server.on("error", (err) => {
+  console.error("GameSearch listen error:", err && err.message ? err.message : err);
+  process.exit(1);
 });
