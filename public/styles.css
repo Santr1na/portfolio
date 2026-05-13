@@ -944,7 +944,11 @@ code {
 .carousel-viewport {
   position: relative;
   width: 100%;
-  min-height: min(52vh, 520px);
+  max-width: min(100%, 460px);
+  margin-inline: auto;
+  /* Tall stage: portrait shots fill height; narrow max-width on desktop avoids a tiny centered strip */
+  height: min(76vh, 720px);
+  min-height: min(52vh, 420px);
   overflow: hidden;
   border-radius: clamp(21px, 3vw, 29px);
   background: radial-gradient(ellipse 85% 75% at 50% 15%, #1a1530 0%, #06040d 68%);
@@ -963,6 +967,8 @@ code {
 
 .carousel-track {
   display: flex;
+  align-items: stretch;
+  height: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -976,21 +982,22 @@ code {
   width: 100%;
   box-sizing: border-box;
   margin: 0;
-  padding: clamp(18px, 3.5vw, 36px) clamp(14px, 4vw, 44px);
+  padding: clamp(8px, 1.8vw, 16px) clamp(8px, 2.5vw, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: min(56vh, 500px);
+  height: 100%;
+  min-height: 0;
 }
 
 .carousel-slide img {
   display: block;
   max-width: 100%;
-  max-height: min(50vh, 460px);
+  max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 16px;
+  border-radius: clamp(12px, 2vw, 16px);
   box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.2),
     0 28px 56px rgba(0, 0, 0, 0.55),
