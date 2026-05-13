@@ -401,8 +401,14 @@ app.get("/health", (req, res) => {
   res.type("text").send("ok");
 });
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/images", express.static(path.join(__dirname, "images")));
+const publicDir = path.join(__dirname, "public");
+const imagesDir = path.join(__dirname, "images");
+app.use(express.static(publicDir));
+app.use("/images", express.static(imagesDir));
+if (APP_BASE) {
+  app.use(APP_BASE, express.static(publicDir));
+  app.use(`${APP_BASE}/images`, express.static(imagesDir));
+}
 
 app.use((req, res) => {
   res.status(404).render("error", { title: "404", message: "Страница не найдена.", layout: "layout" });
