@@ -3,887 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#030712">
-<meta name="description" content="Android developer — Java, REST API, Firebase, production apps.">
-<title>Android Developer</title>
+<meta name="theme-color" content="#0c0a14">
+<meta name="description" content="How to request account deletion for the GameSearch app and what happens to your data.">
+<title>GameSearch — Account Deletion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg-deep: #030712;
-    --bg-card: rgba(15, 23, 42, 0.55);
-    --border: rgba(148, 163, 184, 0.12);
-    --border-hover: rgba(56, 189, 248, 0.35);
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --dim: #64748b;
-    --accent: #38bdf8;
-    --accent-soft: rgba(56, 189, 248, 0.15);
-    --radius: 20px;
-    --radius-sm: 12px;
-    --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
-    --font: "Instrument Sans", system-ui, -apple-system, sans-serif;
+    --bg: #0c0a14;
+    --bg-elevated: rgba(22, 18, 35, 0.72);
+    --stroke: rgba(255, 255, 255, 0.08);
+    --stroke-strong: rgba(168, 85, 247, 0.28);
+    --text: #f4f0ff;
+    --muted: #a89bc4;
+    --dim: #7c6f9a;
+    --accent: #c4b5fd;
+    --accent-bright: #a78bfa;
+    --glow: rgba(139, 92, 246, 0.35);
+    --success: #34d399;
+    --radius: 24px;
+    --radius-sm: 14px;
+    --font-sans: "DM Sans", system-ui, sans-serif;
+    --font-display: "Outfit", var(--font-sans);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html {
-    scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+    * { transition-duration: 0.01ms !important; }
 }
 
 body {
     margin: 0;
-    font-family: var(--font);
-    background: var(--bg-deep);
-    color: var(--text);
-    line-height: 1.6;
     min-height: 100vh;
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
     -webkit-font-smoothing: antialiased;
 }
 
-/* Ambient background */
-.bg {
+.ambient {
     position: fixed;
     inset: 0;
     z-index: -1;
     background:
-        radial-gradient(ellipse 100% 80% at 50% -30%, rgba(56, 189, 248, 0.18), transparent 55%),
-        radial-gradient(ellipse 60% 50% at 100% 0%, rgba(99, 102, 241, 0.12), transparent 45%),
-        radial-gradient(ellipse 50% 40% at 0% 100%, rgba(14, 165, 233, 0.08), transparent 50%),
-        var(--bg-deep);
+        radial-gradient(ellipse 120% 70% at 50% -20%, rgba(124, 58, 237, 0.22), transparent 50%),
+        radial-gradient(ellipse 50% 40% at 100% 50%, rgba(59, 130, 246, 0.08), transparent 45%),
+        radial-gradient(ellipse 45% 35% at 0% 80%, rgba(236, 72, 153, 0.06), transparent 40%),
+        var(--bg);
 }
 
-.bg::after {
+.ambient::after {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40' fill='none' stroke='%23ffffff' stroke-opacity='0.03'/%3E%3C/svg%3E");
     pointer-events: none;
 }
 
-.wrap {
-    max-width: 1080px;
+.shell {
+    max-width: 640px;
     margin: 0 auto;
-    padding: 0 clamp(20px, 4vw, 40px) 64px;
+    padding: clamp(28px, 6vw, 48px) clamp(20px, 5vw, 32px) 72px;
 }
 
-/* Header */
-.site-header {
-    display: flex;
+.brand {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 24px 0 48px;
-    gap: 16px;
-}
-
-.logo {
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-family: var(--font-display);
     font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    text-decoration: none;
+    font-size: 1.125rem;
+    letter-spacing: -0.03em;
+    margin-bottom: clamp(36px, 8vw, 56px);
 }
 
-.logo span {
-    color: var(--accent);
+.brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #8b5cf6 0%, #6366f1 50%, #4f46e5 100%);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.12) inset, 0 8px 32px var(--glow);
+    display: grid;
+    place-items: center;
 }
 
-.nav-cta {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text);
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.4);
-    transition: border-color 0.2s, background 0.2s;
+.brand-mark svg {
+    width: 22px;
+    height: 22px;
+    color: white;
 }
 
-.nav-cta:hover {
-    border-color: var(--border-hover);
-    background: var(--accent-soft);
-}
-
-/* Hero */
-.hero {
-    padding-bottom: clamp(48px, 8vw, 80px);
-}
-
-.hero-badge {
+.page-badge {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--muted);
-    padding: 6px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.5);
-    margin-bottom: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 16px;
 }
 
-.hero-badge::before {
+.page-badge::before {
     content: "";
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 12px #22c55e;
+    background: var(--success);
+    box-shadow: 0 0 12px var(--success);
 }
 
-.hero h1 {
-    font-size: clamp(2.25rem, 5vw, 3.5rem);
+h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 2.75rem);
     font-weight: 700;
     letter-spacing: -0.04em;
-    line-height: 1.1;
-    margin: 0 0 20px;
-    max-width: 14ch;
-}
-
-.gradient-text {
-    background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 45%, #38bdf8 100%);
+    line-height: 1.12;
+    margin: 0 0 16px;
+    background: linear-gradient(120deg, #fff 0%, #e9d5ff 45%, #c4b5fd 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-.hero-lead {
-    font-size: clamp(1.05rem, 2vw, 1.2rem);
+.lead {
+    margin: 0 0 40px;
     color: var(--muted);
-    max-width: 36rem;
-    margin: 0 0 32px;
-    line-height: 1.65;
+    font-size: 1.05rem;
+    max-width: 34em;
 }
 
-.hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: inherit;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    text-decoration: none;
-    padding: 14px 24px;
-    border-radius: var(--radius-sm);
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
-}
-
-.btn:active { transform: scale(0.98); }
-
-.btn-primary {
-    background: linear-gradient(180deg, #7dd3fc 0%, var(--accent) 100%);
-    color: #0f172a;
-    box-shadow: 0 4px 24px rgba(56, 189, 248, 0.35);
-}
-
-.btn-primary:hover {
-    box-shadow: 0 8px 32px rgba(56, 189, 248, 0.45);
-}
-
-.btn-ghost {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-}
-
-.btn-ghost:hover {
-    border-color: var(--border-hover);
-    background: rgba(15, 23, 42, 0.6);
-}
-
-/* Bento grid */
-.bento {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: clamp(14px, 2vw, 20px);
-}
-
-.card {
-    grid-column: span 12;
-    padding: clamp(22px, 3vw, 28px);
+.panel {
     border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--bg-card);
+    border: 1px solid var(--stroke);
+    background: var(--bg-elevated);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    box-shadow: var(--shadow);
-    transition: border-color 0.25s, transform 0.25s;
+    padding: clamp(22px, 4vw, 28px);
+    margin-bottom: 20px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
 }
 
-@media (hover: hover) {
-    .card:hover {
-        border-color: rgba(148, 163, 184, 0.22);
-        transform: translateY(-2px);
-    }
-}
-
-@media (min-width: 768px) {
-    .card-wide { grid-column: span 7; }
-    .card-narrow { grid-column: span 5; }
-    .card-half { grid-column: span 6; }
-}
-
-.card-label {
-    font-size: 0.75rem;
+.panel h2 {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    margin: 0 0 12px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    margin: 0 0 20px;
 }
 
-.card h2 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin: 0 0 14px;
-    color: var(--text);
-}
-
-.card p {
+.steps {
     margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+}
+
+.steps li {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--stroke);
+    color: var(--muted);
+}
+
+.steps li:first-child { padding-top: 0; }
+.steps li:last-child { border-bottom: none; padding-bottom: 0; }
+
+.steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--accent-bright);
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.steps strong {
+    display: block;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 1.02rem;
+}
+
+.email-block {
+    margin-top: 8px;
+}
+
+.email-block p {
+    margin: 0 0 12px;
     color: var(--muted);
     font-size: 0.98rem;
 }
 
-.card p + p { margin-top: 12px; }
+.email-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--stroke-strong);
+    background: rgba(139, 92, 246, 0.08);
+    color: var(--accent-bright);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    word-break: break-all;
+}
 
-.feature-list {
-    margin: 16px 0 0;
+.email-link:hover {
+    border-color: rgba(167, 139, 250, 0.5);
+    background: rgba(139, 92, 246, 0.14);
+}
+
+.email-link:active { transform: scale(0.99); }
+
+.email-link svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.9;
+}
+
+.data-list {
+    margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.feature-list li {
+.data-list li {
     position: relative;
     padding-left: 22px;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.98rem;
 }
 
-.feature-list li::before {
+.data-list li:last-child { margin-bottom: 0; }
+
+.data-list li::before {
     content: "";
     position: absolute;
     left: 0;
     top: 0.55em;
     width: 8px;
     height: 8px;
-    border-radius: 2px;
-    background: var(--accent);
-    opacity: 0.85;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #a78bfa, #6366f1);
 }
 
-.project-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text);
-    margin: 0 0 8px;
-}
-
-.project-title .icon {
-    font-size: 1.35rem;
-    line-height: 1;
-}
-
-/* Skills */
-.skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 18px;
-}
-
-.skill-tag {
+footer {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--stroke);
     font-size: 0.8125rem;
-    font-weight: 500;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: rgba(30, 41, 59, 0.4);
-    color: var(--text);
-    transition: border-color 0.2s, background 0.2s;
-}
-
-.skill-tag:hover {
-    border-color: var(--border-hover);
-    background: var(--accent-soft);
-}
-
-/* Contact */
-.contact-row {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-@media (min-width: 520px) {
-    .contact-row {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-}
-
-.contact-link {
-    flex: 1;
-    min-width: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px 18px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.35);
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s, background 0.2s;
-}
-
-.contact-link:hover {
-    border-color: var(--border-hover);
-    background: rgba(56, 189, 248, 0.08);
-}
-
-.contact-link small {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
     color: var(--dim);
-}
-
-.contact-link strong {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--accent);
-}
-
-.contact-cta-wrap {
-    margin-top: 22px;
-}
-
-.contact-cta-wrap .btn-primary {
-    width: 100%;
-    max-width: 280px;
-}
-
-/* App screenshots carousel — showcase layout */
-.carousel-card .carousel-hint {
-    font-size: 0.875rem;
-    color: var(--dim);
-    margin: 0 0 24px;
-    max-width: 42rem;
-}
-
-.carousel-card code {
-    font-size: 0.8em;
-    padding: 2px 8px;
-    border-radius: 6px;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid var(--border);
-    color: var(--muted);
-}
-
-.carousel {
-    position: relative;
-    margin-top: 8px;
-    --carousel-ease: cubic-bezier(0.33, 1, 0.68, 1);
-    --carousel-dur: 0.55s;
-}
-
-/* Gradient bezel + depth */
-.carousel-shell {
-    position: relative;
-    padding: 1px;
-    border-radius: clamp(20px, 3vw, 28px);
-    background: linear-gradient(
-        145deg,
-        rgba(56, 189, 248, 0.35) 0%,
-        rgba(148, 163, 184, 0.12) 40%,
-        rgba(99, 102, 241, 0.2) 100%
-    );
-    box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.4),
-        0 32px 64px rgba(0, 0, 0, 0.45),
-        0 0 80px rgba(56, 189, 248, 0.06);
-}
-
-.carousel-viewport {
-    position: relative;
-    overflow: hidden;
-    border-radius: clamp(19px, 3vw, 27px);
-    background: radial-gradient(ellipse 80% 70% at 50% 20%, #152238 0%, #060a12 65%);
-    touch-action: pan-y pinch-zoom;
-}
-
-.carousel-viewport::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    z-index: 2;
-}
-
-.carousel-track {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    transition: transform var(--carousel-dur) var(--carousel-ease);
-    will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .carousel { --carousel-dur: 0.01ms; }
-    .carousel-track { transition: none; }
-}
-
-.carousel-slide {
-    flex: 0 0 100%;
-    margin: 0;
-    padding: clamp(20px, 4vw, 36px) clamp(16px, 5vw, 48px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: min(64vh, 540px);
-}
-
-.carousel-slide img {
-    display: block;
-    position: relative;
-    z-index: 1;
-    max-width: 100%;
-    max-height: min(56vh, 500px);
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: 16px;
-    box-shadow:
-        0 4px 6px rgba(0, 0, 0, 0.15),
-        0 24px 48px rgba(0, 0, 0, 0.55),
-        0 0 1px rgba(255, 255, 255, 0.12);
-    transition: transform var(--carousel-dur) var(--carousel-ease), opacity 0.35s ease;
-}
-
-.carousel-slide.is-active img {
-    transform: scale(1.02);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .carousel-slide.is-active img { transform: none; }
-}
-
-/* Floating nav */
-.carousel-fab {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 4;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    color: #f8fafc;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.2s;
-}
-
-.carousel-fab:hover {
-    background: rgba(56, 189, 248, 0.2);
-    border-color: rgba(56, 189, 248, 0.45);
-    color: #7dd3fc;
-}
-
-.carousel-fab:active {
-    transform: translateY(-50%) scale(0.94);
-}
-
-.carousel-prev { left: clamp(10px, 2.5vw, 20px); }
-.carousel-next { right: clamp(10px, 2.5vw, 20px); }
-
-.carousel-fab svg {
-    width: 22px;
-    height: 22px;
-}
-
-@media (max-width: 520px) {
-    .carousel-fab {
-        width: 42px;
-        height: 42px;
-    }
-    .carousel-prev { left: 8px; }
-    .carousel-next { right: 8px; }
-}
-
-/* Caption + index */
-.carousel-meta {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px;
-    margin-top: 20px;
-    padding: 0 4px;
-    flex-wrap: wrap;
-}
-
-.carousel-caption {
-    margin: 0;
-    font-size: clamp(0.95rem, 2vw, 1.05rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--text);
-    line-height: 1.35;
-    flex: 1;
-    min-width: min(100%, 200px);
-}
-
-.carousel-caption span {
-    display: block;
-    margin-top: 4px;
-    font-size: 0.8125rem;
-    font-weight: 400;
-    letter-spacing: 0;
-    color: var(--muted);
-}
-
-.carousel-counter {
-    font-variant-numeric: tabular-nums;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--dim);
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.35);
-}
-
-.carousel-counter em {
-    font-style: normal;
-    color: var(--accent);
-}
-
-/* Progress rail */
-.carousel-progress {
-    margin-top: 14px;
-    height: 3px;
-    border-radius: 999px;
-    background: rgba(148, 163, 184, 0.12);
-    overflow: hidden;
-}
-
-.carousel-progress-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #22d3ee, #38bdf8, #818cf8);
-    transition: width var(--carousel-dur) var(--carousel-ease);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .carousel-progress-fill { transition: none; }
-}
-
-/* Segment strip */
-.carousel-segments {
-    display: flex;
-    gap: 6px;
-    margin-top: 14px;
-}
-
-.carousel-seg {
-    flex: 1;
-    height: 4px;
-    min-width: 0;
-    padding: 0;
-    border: none;
-    border-radius: 999px;
-    background: rgba(148, 163, 184, 0.15);
-    cursor: pointer;
-    transition: background 0.3s ease, height 0.25s ease, box-shadow 0.25s ease;
-}
-
-.carousel-seg:hover {
-    background: rgba(148, 163, 184, 0.28);
-}
-
-.carousel-seg[aria-current="true"] {
-    height: 5px;
-    background: linear-gradient(90deg, #22d3ee, #38bdf8);
-    box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
-}
-
-/* Footer */
-.site-footer {
     text-align: center;
-    margin-top: 56px;
-    padding-top: 32px;
-    border-top: 1px solid var(--border);
-    font-size: 0.875rem;
-    color: var(--dim);
 }
 </style>
 </head>
 <body>
-<div class="bg" aria-hidden="true"></div>
+<div class="ambient" aria-hidden="true"></div>
 
-<header class="wrap site-header">
-    <a class="logo" href="#">Android<span>.</span>Developer</a>
-    <a class="nav-cta" href="#contact">Get in touch</a>
-</header>
+<div class="shell">
+    <a class="brand" href="#" aria-label="GameSearch home">
+        <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        GameSearch
+    </a>
 
-<main class="wrap">
-    <section class="hero" aria-labelledby="hero-title">
-        <p class="hero-badge">Available for freelance</p>
-        <h1 id="hero-title"><span class="gradient-text">Android</span> apps that ship</h1>
-        <p class="hero-lead">I build stable Android apps with API integration and Firebase — clean structure, solid UI, production mindset.</p>
-        <div class="hero-actions">
-            <a class="btn btn-primary" href="#contact">Contact me</a>
-            <a class="btn btn-ghost" href="#project">View project</a>
-        </div>
-    </section>
+    <header>
+        <p class="page-badge">Privacy</p>
+        <h1 id="page-title">GameSearch Account Deletion</h1>
+        <p class="lead">Request removal of your GameSearch account from the app or by email. Below is how to do it and what happens to your data.</p>
+    </header>
 
-    <div class="bento">
-        <article class="card card-wide">
-            <p class="card-label">About</p>
-            <h2>About me</h2>
-            <p>Android developer (Java) with practical experience building mobile apps. I work with REST API, Firebase, and clean project structure.</p>
-            <p>Currently developing a production-level app in Google Play closed testing.</p>
-        </article>
+    <main aria-labelledby="page-title">
+        <section class="panel" aria-labelledby="how-heading">
+            <h2 id="how-heading">Request deletion in the app</h2>
+            <ol class="steps">
+                <li><div><strong>Open the app</strong> on your device and sign in if needed.</div></li>
+                <li><div><strong>Go to Settings</strong> from the main navigation or profile menu.</div></li>
+                <li><div><strong>Select Delete Account</strong> and follow the prompts to confirm.</div></li>
+            </ol>
+        </section>
 
-        <article class="card card-narrow">
-            <p class="card-label">Focus</p>
-            <h2>What I do</h2>
-            <p>Retrofit-driven APIs, Firebase Auth, RecyclerView-heavy feeds, and maintainable Gradle modules — from prototype to store-ready builds.</p>
-        </article>
+        <section class="panel" aria-labelledby="email-heading">
+            <h2 id="email-heading">Request by email</h2>
+            <div class="email-block">
+                <p>You can also ask us to delete your account by sending a message from the address associated with your account:</p>
+                <a class="email-link" href="mailto:gamesearch16@gmail.com?subject=GameSearch%20account%20deletion%20request">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+                    gamesearch16@gmail.com
+                </a>
+            </div>
+        </section>
 
-        <article class="card card-half" id="project">
-            <p class="card-label">Featured</p>
-            <p class="project-title"><span class="icon" aria-hidden="true">📱</span> GAME search</p>
-            <p>Gaming library, stats, collections, rankings, and a dark card-based news feed — built for real daily use.</p>
-            <ul class="feature-list">
-                <li>REST APIs (Retrofit) &amp; structured UI lists</li>
-                <li>Firebase Authentication</li>
-                <li>News, favorites, collections, top lists</li>
-                <li>RecyclerView-heavy screens &amp; polish</li>
+        <section class="panel" aria-labelledby="after-heading">
+            <h2 id="after-heading">When your account is deleted</h2>
+            <ul class="data-list">
+                <li>Profile data is removed.</li>
+                <li>Comments and related content may be deleted or anonymized.</li>
+                <li>Some technical data may be retained temporarily for security and legal purposes.</li>
             </ul>
-        </article>
+        </section>
+    </main>
 
-        <article class="card card-half">
-            <p class="card-label">Stack</p>
-            <h2>Skills</h2>
-            <p>Tools and technologies I use daily.</p>
-            <div class="skills">
-                <span class="skill-tag">Android</span>
-                <span class="skill-tag">Java</span>
-                <span class="skill-tag">REST API</span>
-                <span class="skill-tag">Firebase</span>
-                <span class="skill-tag">Retrofit</span>
-                <span class="skill-tag">JSON</span>
-                <span class="skill-tag">Git</span>
-            </div>
-        </article>
-
-        <article class="card carousel-card" id="screenshots" style="grid-column: 1 / -1;" aria-labelledby="carousel-title">
-            <p class="card-label">Product</p>
-            <h2 id="carousel-title">GAME search — product shots</h2>
-            <p class="carousel-hint">Promo frames from the app (Instagram story format). Files live in <code>images/</code> as <code>slide-1-profile.png</code> … <code>slide-5-top-games.png</code>.</p>
-            <div class="carousel" data-carousel aria-roledescription="carousel" aria-label="GAME search screenshots">
-                <div class="carousel-shell">
-                    <button type="button" class="carousel-fab carousel-prev" aria-controls="carousel-track" aria-label="Previous slide">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <button type="button" class="carousel-fab carousel-next" aria-controls="carousel-track" aria-label="Next slide">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
-                    <div class="carousel-viewport" data-carousel-viewport>
-                        <ul class="carousel-track" id="carousel-track" role="list">
-                            <li class="carousel-slide is-active" data-caption="Profile &amp; gaming stats" data-caption-hint="Library progress &amp; stats at a glance">
-                                <img src="images/slide-1-profile.png" alt="GAME search: user profile with play stats and donut chart" width="1080" height="1920" loading="eager" decoding="async">
-                            </li>
-                            <li class="carousel-slide" data-caption="Gaming news feed" data-caption-hint="Curated articles &amp; date filter">
-                                <img src="images/slide-2-news.png" alt="GAME search: news feed with featured article and date picker" width="1080" height="1920" loading="lazy" decoding="async">
-                            </li>
-                            <li class="carousel-slide" data-caption="Favorites library" data-caption-hint="Covers, scores &amp; metadata">
-                                <img src="images/slide-3-favorites.png" alt="GAME search: favorites grid with game covers and scores" width="1080" height="1920" loading="lazy" decoding="async">
-                            </li>
-                            <li class="carousel-slide" data-caption="Custom collections" data-caption-hint="Shareable lists of titles">
-                                <img src="images/slide-4-collections.png" alt="GAME search: shared collection with Elden Ring and Minecraft" width="1080" height="1920" loading="lazy" decoding="async">
-                            </li>
-                            <li class="carousel-slide" data-caption="Top games &amp; rankings" data-caption-hint="Ranked discovery by genre &amp; year">
-                                <img src="images/slide-5-top-games.png" alt="GAME search: top adventure games and yearly rankings" width="1080" height="1920" loading="lazy" decoding="async">
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="carousel-meta">
-                    <p class="carousel-caption" id="carousel-caption" aria-live="polite"></p>
-                    <span class="carousel-counter" id="carousel-counter"></span>
-                </div>
-                <div class="carousel-progress" aria-hidden="true">
-                    <div class="carousel-progress-fill" id="carousel-progress-fill"></div>
-                </div>
-                <div class="carousel-segments" role="tablist" aria-label="Slides"></div>
-            </div>
-        </article>
-
-        <article class="card" id="contact" style="grid-column: 1 / -1;">
-            <p class="card-label">Contact</p>
-            <h2>Let’s talk</h2>
-            <p>Replace placeholders with your real contacts when you publish.</p>
-            <div class="contact-row">
-                <a class="contact-link" href="mailto:gamesearch16@gmail.com">
-                    <small>Email</small>
-                    <strong>gamesearch16@gmail.com</strong>
-                </a>
-                <a class="contact-link" href="https://t.me/Santr1na" target="_blank" rel="noopener noreferrer">
-                    <small>Telegram</small>
-                    <strong>@Santr1na</strong>
-                </a>
-            </div>
-            <div class="contact-cta-wrap">
-                <a class="btn btn-primary" href="mailto:gamesearch16@gmail.com">Send an email</a>
-            </div>
-        </article>
-    </div>
-
-    <footer class="site-footer">
-        © 2026 Android Developer — built as a static page
+    <footer>
+        © GameSearch — account &amp; data information
     </footer>
-</main>
-<script>
-(function () {
-    var root = document.querySelector("[data-carousel]");
-    if (!root) return;
-    var track = root.querySelector(".carousel-track");
-    var slides = track ? [].slice.call(track.children) : [];
-    var prev = root.querySelector(".carousel-prev");
-    var next = root.querySelector(".carousel-next");
-    var segmentsWrap = root.querySelector(".carousel-segments");
-    var captionEl = root.querySelector("#carousel-caption");
-    var counterEl = root.querySelector("#carousel-counter");
-    var progressFill = root.querySelector("#carousel-progress-fill");
-    var viewport = root.querySelector("[data-carousel-viewport]");
-    if (!slides.length || !prev || !next || !segmentsWrap) return;
-
-    var i = 0;
-    var total = slides.length;
-
-    function setCaption() {
-        var s = slides[i];
-        if (!captionEl || !s) return;
-        var title = s.getAttribute("data-caption") || "";
-        var hint = s.getAttribute("data-caption-hint") || "";
-        captionEl.innerHTML = hint
-            ? title + "<span>" + hint + "</span>"
-            : title;
-    }
-
-    function setActiveSlide() {
-        slides.forEach(function (sl, j) {
-            sl.classList.toggle("is-active", j === i);
-        });
-    }
-
-    function updateSegments() {
-        [].forEach.call(segmentsWrap.querySelectorAll("button"), function (b, j) {
-            b.setAttribute("aria-current", j === i ? "true" : "false");
-            b.setAttribute("tabindex", j === i ? "0" : "-1");
-        });
-    }
-
-    function updateCounter() {
-        if (!counterEl) return;
-        var cur = String(i + 1).padStart(2, "0");
-        var tot = String(total).padStart(2, "0");
-        counterEl.innerHTML = "<em>" + cur + "</em> / " + tot;
-    }
-
-    function updateProgress() {
-        if (!progressFill) return;
-        progressFill.style.width = ((i + 1) / total * 100) + "%";
-    }
-
-    function go(n) {
-        i = (n + total) % total;
-        track.style.transform = "translateX(-" + i * 100 + "%)";
-        setCaption();
-        setActiveSlide();
-        updateSegments();
-        updateCounter();
-        updateProgress();
-    }
-
-    slides.forEach(function (_, j) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "carousel-seg";
-        b.setAttribute("role", "tab");
-        b.setAttribute("aria-label", "Slide " + (j + 1));
-        b.addEventListener("click", function () { go(j); });
-        segmentsWrap.appendChild(b);
-    });
-
-    prev.addEventListener("click", function () { go(i - 1); });
-    next.addEventListener("click", function () { go(i + 1); });
-
-    root.tabIndex = 0;
-    root.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowLeft") { e.preventDefault(); go(i - 1); }
-        if (e.key === "ArrowRight") { e.preventDefault(); go(i + 1); }
-    });
-
-    if (viewport) {
-        var touchX = null;
-        viewport.addEventListener("touchstart", function (e) {
-            touchX = e.changedTouches[0].screenX;
-        }, { passive: true });
-        viewport.addEventListener("touchend", function (e) {
-            if (touchX === null) return;
-            var dx = e.changedTouches[0].screenX - touchX;
-            touchX = null;
-            if (dx < -56) go(i + 1);
-            else if (dx > 56) go(i - 1);
-        }, { passive: true });
-    }
-
-    go(0);
-})();
-</script>
+</div>
 </body>
 </html>
