@@ -1,0 +1,7 @@
+{
+  "name": "freelansee",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  }
+}
