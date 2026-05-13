@@ -6,6 +6,7 @@
     "hash-admin": "node scripts/hash-admin-password.js"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "cookie-session": "^2.1.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",

@@ -1,7 +1,9 @@
 "use strict";
 
-const crypto = require("crypto");
 const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
+const crypto = require("crypto");
 const express = require("express");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -51,7 +53,31 @@ const PLAY_URL =
 const PORT = Number(process.env.PORT) || 3017;
 const HOST = process.env.HOST || "127.0.0.1";
 
+function normalizeAppBase(raw) {
+  const s = String(raw || "").trim();
+  if (!s) return "";
+  return "/" + s.replace(/^\/+|\/+$/g, "");
+}
+
+const APP_BASE = normalizeAppBase(process.env.APP_BASE_PATH || "");
+
+function appUrl(p) {
+  if (p == null || p === "") {
+    return APP_BASE ? `${APP_BASE}/` : "/";
+  }
+  let pathPart = String(p);
+  if (!pathPart.startsWith("/")) {
+    pathPart = `/${pathPart}`;
+  }
+  if (pathPart === "/") {
+    return APP_BASE ? `${APP_BASE}/` : "/";
+  }
+  return `${APP_BASE}${pathPart}`;
+}
+
 const app = express();
+app.locals.appUrl = appUrl;
+app.locals.appBase = APP_BASE;
 app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -92,6 +118,7 @@ app.use(
     sameSite: "lax",
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
+    path: APP_BASE || "/",
   })
 );
 
@@ -152,16 +179,20 @@ function verifyCsrf(req, res, next) {
 
 function requireAdmin(req, res, next) {
   if (req.session && req.session.admin) return next();
-  res.redirect("/admin/login");
+  res.redirect(appUrl("/admin/login"));
 }
 
 app.get("/admin", (req, res) => {
-  if (req.session.admin) return res.redirect("/admin/questions");
-  res.redirect("/admin/login");
+  if (req.session.admin) return res.redirect(appUrl("/admin/questions"));
+  res.redirect(appUrl("/admin/login"));
 });
 
 app.get("/", (req, res) => {
-  res.render("home", { title: "GameSearch", layout: "layout", pageScripts: ["/carousel.js"] });
+  res.render("home", {
+    title: "GameSearch",
+    layout: "layout",
+    pageScripts: [appUrl("/carousel.js")],
+  });
 });
 
 app.get("/ask", (req, res) => {
@@ -257,7 +288,7 @@ app.post("/q/:slug/feedback", feedbackLimiter, verifyCsrf, (req, res) => {
   }
 
   if (req.body.company && String(req.body.company).trim() !== "") {
-    return res.redirect(`/q/${encodeURIComponent(slug)}?thanks=1`);
+    return res.redirect(appUrl("/q/" + encodeURIComponent(slug)) + "?thanks=1");
   }
 
   let rating = req.body.rating != null && req.body.rating !== "" ? Number(req.body.rating) : null;
@@ -266,7 +297,7 @@ app.post("/q/:slug/feedback", feedbackLimiter, verifyCsrf, (req, res) => {
   }
   const comment = String(req.body.comment || "").trim().slice(0, 1500);
   if (!rating && !comment) {
-    return res.redirect(`/q/${encodeURIComponent(slug)}?err=empty`);
+    return res.redirect(appUrl("/q/" + encodeURIComponent(slug)) + "?err=empty");
   }
 
   addArticleFeedback({
@@ -278,11 +309,11 @@ app.post("/q/:slug/feedback", feedbackLimiter, verifyCsrf, (req, res) => {
     ipHash: hashIp(req),
   });
 
-  res.redirect(`/q/${encodeURIComponent(slug)}?thanks=1`);
+  res.redirect(appUrl("/q/" + encodeURIComponent(slug)) + "?thanks=1");
 });
 
 app.get("/admin/login", (req, res) => {
-  if (req.session.admin) return res.redirect("/admin/questions");
+  if (req.session.admin) return res.redirect(appUrl("/admin/questions"));
   res.render("admin-login", { title: "Вход", error: null, layout: "layout" });
 });
 
@@ -307,12 +338,12 @@ app.post("/admin/login", loginLimiter, verifyCsrf, (req, res) => {
   }
 
   req.session.admin = true;
-  res.redirect("/admin/questions");
+  res.redirect(appUrl("/admin/questions"));
 });
 
 app.post("/admin/logout", verifyCsrf, (req, res) => {
   req.session = null;
-  res.redirect("/admin/login");
+  res.redirect(appUrl("/admin/login"));
 });
 
 app.get("/admin/questions", requireAdmin, (req, res) => {
@@ -329,23 +360,23 @@ app.post("/admin/questions/:id/answer", requireAdmin, verifyCsrf, (req, res) => 
   const id = req.params.id;
   const answer = String(req.body.answer || "").trim();
   if (!getQuestionById(id)) {
-    return res.redirect("/admin/questions");
+    return res.redirect(appUrl("/admin/questions"));
   }
   if (answer.length > 20000) {
-    return res.redirect(`/admin/questions?err=long#q-${encodeURIComponent(id)}`);
+    return res.redirect(appUrl("/admin/questions") + "?err=long#q-" + encodeURIComponent(id));
   }
   setAnswer(id, answer || null);
-  res.redirect("/admin/questions#q-" + encodeURIComponent(id));
+  res.redirect(appUrl("/admin/questions") + "#q-" + encodeURIComponent(id));
 });
 
 app.post("/admin/questions/:id/publish", requireAdmin, verifyCsrf, (req, res) => {
   const id = req.params.id;
   const q = getQuestionById(id);
   if (!q || !String(q.answer || "").trim()) {
-    return res.redirect("/admin/questions?err=noanswer");
+    return res.redirect(appUrl("/admin/questions") + "?err=noanswer");
   }
   if (q.status === "published" && q.slug) {
-    return res.redirect(`/q/${encodeURIComponent(q.slug)}`);
+    return res.redirect(appUrl("/q/" + encodeURIComponent(q.slug)));
   }
 
   let slug;
@@ -357,13 +388,13 @@ app.post("/admin/questions/:id/publish", requireAdmin, verifyCsrf, (req, res) =>
     }
   }
   if (!slug) {
-    return res.redirect("/admin/questions?err=slug");
+    return res.redirect(appUrl("/admin/questions") + "?err=slug");
   }
 
   if (!publishQuestion(id, slug, Date.now())) {
-    return res.redirect("/admin/questions?err=publish");
+    return res.redirect(appUrl("/admin/questions") + "?err=publish");
   }
-  res.redirect(`/q/${slug}`);
+  res.redirect(appUrl("/q/" + slug));
 });
 
 app.get("/health", (req, res) => {

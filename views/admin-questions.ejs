@@ -1,7 +1,10 @@
-<div class="shell wide">
+<div class="shell wide page-intro">
   <div class="admin-head">
-    <h1 class="page-h1">Вопросы пользователей</h1>
-    <form method="post" action="/admin/logout" class="inline-form">
+    <div>
+      <p class="page-badge page-badge--tight">Панель</p>
+      <h1 class="page-h1 page-h1--gradient">Вопросы пользователей</h1>
+    </div>
+    <form method="post" action="<%= appUrl('/admin/logout') %>" class="inline-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn btn-ghost btn-sm">Выйти</button>
     </form>
@@ -25,7 +28,7 @@
     </div>
     <div class="admin-q"><%= q.body %></div>
 
-    <form method="post" action="/admin/questions/<%= q.id %>/answer" class="stack-form">
+    <form method="post" action="<%= appUrl('/admin/questions/' + q.id + '/answer') %>" class="stack-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label class="field">
         <span>Ответ</span>
@@ -35,9 +38,9 @@
     </form>
 
     <% if (q.status === 'published' && q.slug) { %>
-    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="/q/<%= q.slug %>">Открыть публикацию</a></p>
+    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="<%= appUrl('/q/' + q.slug) %>">Открыть публикацию</a></p>
     <% } else if (String(q.answer || '').trim()) { %>
-    <form method="post" action="/admin/questions/<%= q.id %>/publish" class="inline-form" style="margin-top:12px">
+    <form method="post" action="<%= appUrl('/admin/questions/' + q.id + '/publish') %>" class="inline-form admin-publish-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <button type="submit" class="btn btn-ghost btn-sm">Выложить на отдельную страницу</button>
     </form>

@@ -1,11 +1,13 @@
-<div class="shell narrow">
-  <h1 class="page-h1">Задать вопрос</h1>
+<div class="shell narrow page-intro">
+  <p class="page-badge">Обратная связь</p>
+  <h1 class="page-h1 page-h1--gradient">Задать вопрос</h1>
   <% if (sent) { %>
   <div class="alert alert-success">Спасибо! Сообщение получено. Мы ответим, когда сможем — следите за публикациями на сайте.</div>
   <% } else { %>
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
-  <p class="muted">Опишите вопрос по приложению. Защита от спама: лимит отправок с одного IP, проверка формы.</p>
-  <form method="post" action="/ask" class="stack-form">
+  <p class="muted lead-tight">Опишите вопрос по приложению. Защита от спама: лимит отправок с одного IP, проверка формы.</p>
+  <div class="panel form-panel">
+  <form method="post" action="<%= appUrl('/ask') %>" class="stack-form stack-form--flush">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="hp-field" aria-hidden="true">
       <label for="website">Не заполняйте</label>
@@ -19,7 +21,8 @@
       <span>Email для ответа (необязательно)</span>
       <input type="email" name="contact_email" maxlength="320" placeholder="you@example.com">
     </label>
-    <button type="submit" class="btn btn-primary">Отправить</button>
+    <button type="submit" class="btn btn-primary btn-send">Отправить</button>
   </form>
+  </div>
   <% } %>
 </div>

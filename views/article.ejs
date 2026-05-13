@@ -6,18 +6,24 @@
   <div class="alert alert-error">Укажите оценку или короткий комментарий.</div>
   <% } %>
 
-  <article class="article-block">
+  <article class="article-block panel article-hero">
     <p class="page-badge">Публикация</p>
-    <h1 class="page-h1">Вопрос и ответ</h1>
-    <div class="qa-block">
-      <h2 class="panel-h2">Вопрос</h2>
-      <div class="qa-body"><% article.body.split(/\r?\n/).forEach(function (line) { %><p><%= line || ' ' %></p><% }) %></div>
+    <h1 class="page-h1 page-h1--gradient">Вопрос и ответ</h1>
+    <div class="qa-card qa-card--q">
+      <span class="qa-icon" aria-hidden="true">?</span>
+      <div>
+        <h2 class="panel-h2">Вопрос</h2>
+        <div class="qa-body"><% article.body.split(/\r?\n/).forEach(function (line) { %><p><%= line || ' ' %></p><% }) %></div>
+      </div>
     </div>
-    <div class="qa-block">
-      <h2 class="panel-h2">Ответ</h2>
-      <div class="qa-body"><% (article.answer || '').split(/\r?\n/).forEach(function (line) { %><p><%= line || ' ' %></p><% }) %></div>
+    <div class="qa-card qa-card--a">
+      <span class="qa-icon" aria-hidden="true">✓</span>
+      <div>
+        <h2 class="panel-h2">Ответ</h2>
+        <div class="qa-body"><% (article.answer || '').split(/\r?\n/).forEach(function (line) { %><p><%= line || ' ' %></p><% }) %></div>
+      </div>
     </div>
-    <p class="muted" style="font-size:0.875rem">Опубликовано: <%= new Date(article.published_at).toLocaleString('ru-RU') %></p>
+    <p class="muted meta-line">Опубликовано: <%= new Date(article.published_at).toLocaleString('ru-RU') %></p>
   </article>
 
   <section class="panel review-panel">
@@ -27,7 +33,7 @@
 
     <h3 class="subh">Короткий отклик здесь (по желанию)</h3>
     <p class="muted small">Не публикуется на странице; используется для внутренней аналитики. Лимит отправок с одного IP.</p>
-    <form method="post" action="/q/<%= article.slug %>/feedback" class="stack-form">
+    <form method="post" action="<%= appUrl('/q/' + article.slug + '/feedback') %>" class="stack-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="hp-field" aria-hidden="true">
         <label for="company">Не заполняйте</label>

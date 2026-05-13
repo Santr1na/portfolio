@@ -1,10 +1,10 @@
-<section class="hero">
+<section class="hero hero--mesh">
   <p class="page-badge">Добро пожаловать</p>
   <h1 class="hero-title">GameSearch — ваш каталог игр</h1>
   <p class="lead hero-lead">Библиотека, избранное, коллекции, рейтинги и лента новостей в тёмном интерфейсе. Всё для тех, кто следит за играми каждый день.</p>
   <div class="hero-actions">
     <a class="btn btn-primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer">Скачать в Google Play</a>
-    <a class="btn btn-ghost" href="/ask">Задать вопрос</a>
+    <a class="btn btn-ghost" href="<%= appUrl('/ask') %>">Задать вопрос</a>
   </div>
 </section>
 
@@ -19,9 +19,9 @@
 </section>
 
 <section class="panel carousel-card" aria-labelledby="shots-title">
-  <p class="page-badge" style="margin-bottom:12px">Скриншоты</p>
+  <p class="page-badge page-badge--tight">Скриншоты</p>
   <h2 id="shots-title" class="panel-title-inline">Интерфейс приложения</h2>
-  <p class="muted" style="margin:0 0 24px">Кадры в формате сторис (1080×1920). Файлы: <code>images/slide-1-profile.png</code> … <code>slide-5-top-games.png</code>.</p>
+  <p class="muted carousel-intro">Кадры в формате сторис (1080×1920). Файлы: <code>images/slide-1-profile.png</code> … <code>slide-5-top-games.png</code>.</p>
   <div class="carousel" data-carousel aria-roledescription="carousel" aria-label="Скриншоты GameSearch">
     <div class="carousel-shell">
       <button type="button" class="carousel-fab carousel-prev" aria-controls="carousel-track" aria-label="Предыдущий">
@@ -33,19 +33,19 @@
       <div class="carousel-viewport" data-carousel-viewport>
         <ul class="carousel-track" id="carousel-track" role="list">
           <li class="carousel-slide is-active" data-caption="Профиль и статистика" data-caption-hint="Прогресс и диаграммы">
-            <img src="/images/slide-1-profile.png" alt="Профиль GameSearch" width="1080" height="1920" loading="eager" decoding="async">
+            <img src="<%= appUrl('/images/slide-1-profile.png') %>" alt="Профиль GameSearch" width="1080" height="1920" loading="eager" decoding="async">
           </li>
           <li class="carousel-slide" data-caption="Лента новостей" data-caption-hint="Статьи и фильтр по дате">
-            <img src="/images/slide-2-news.png" alt="Новости GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+            <img src="<%= appUrl('/images/slide-2-news.png') %>" alt="Новости GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
           <li class="carousel-slide" data-caption="Избранное" data-caption-hint="Обложки и оценки">
-            <img src="/images/slide-3-favorites.png" alt="Избранное GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+            <img src="<%= appUrl('/images/slide-3-favorites.png') %>" alt="Избранное GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
           <li class="carousel-slide" data-caption="Коллекции" data-caption-hint="Свои списки игр">
-            <img src="/images/slide-4-collections.png" alt="Коллекции GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+            <img src="<%= appUrl('/images/slide-4-collections.png') %>" alt="Коллекции GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
           <li class="carousel-slide" data-caption="Топы и рейтинги" data-caption-hint="По жанру и году">
-            <img src="/images/slide-5-top-games.png" alt="Топы GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+            <img src="<%= appUrl('/images/slide-5-top-games.png') %>" alt="Топы GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
         </ul>
       </div>

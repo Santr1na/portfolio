@@ -1,12 +1,15 @@
-<div class="shell narrow">
-  <h1 class="page-h1">Админ</h1>
+<div class="shell narrow page-intro">
+  <p class="page-badge">Доступ</p>
+  <h1 class="page-h1 page-h1--gradient">Админ</h1>
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
-  <form method="post" action="/admin/login" class="stack-form" style="max-width:360px">
+  <div class="panel form-panel form-panel--narrow">
+  <form method="post" action="<%= appUrl('/admin/login') %>" class="stack-form stack-form--flush">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label class="field">
       <span>Пароль</span>
       <input type="password" name="password" required autocomplete="current-password">
     </label>
-    <button type="submit" class="btn btn-primary">Войти</button>
+    <button type="submit" class="btn btn-primary btn-send">Войти</button>
   </form>
+  </div>
 </div>
