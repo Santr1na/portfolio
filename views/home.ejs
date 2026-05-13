@@ -1,75 +1,75 @@
 <section class="hero hero--mesh">
   <div class="hero-head">
     <div class="hero-app-badge" aria-hidden="true">
-      <img class="hero-app-logo-img" src="<%= appUrl('/images/ic_launcher_background.png') %>" alt="" width="512" height="512" decoding="async">
+      <img class="hero-app-logo-img" src="<%= assetUrl('/images/ic_launcher_background.png') %>" alt="" width="512" height="512" decoding="async">
     </div>
     <div class="hero-copy">
-      <p class="page-badge">Добро пожаловать</p>
-      <h1 class="hero-title">GameSearch — ваш каталог игр</h1>
-      <p class="lead hero-lead">Мобильное приложение для Android: библиотека, избранное, коллекции, рейтинги и лента новостей в тёмном интерфейсе. Для тех, кто следит за играми каждый день.</p>
+      <p class="page-badge"><%= t('home_badge_welcome') %></p>
+      <h1 class="hero-title"><%= t('home_hero_title') %></h1>
+      <p class="lead hero-lead"><%= t('home_hero_lead') %></p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer">Скачать в Google Play</a>
-        <a class="btn btn-ghost" href="<%= appUrl('/ask') %>">Задать вопрос</a>
+        <a class="btn btn-primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer"><%= t('home_btn_play') %></a>
+        <a class="btn btn-ghost" href="<%= appUrl('/ask') %>"><%= t('home_btn_ask') %></a>
       </div>
     </div>
   </div>
 </section>
 
 <section class="panel about-app">
-  <h2 class="panel-title-inline">О приложении</h2>
+  <h2 class="panel-title-inline"><%= t('home_about_h') %></h2>
   <div class="about-app-grid">
     <div class="about-app-main">
-      <p class="lead about-lead">GameSearch помогает находить игры, собирать свою библиотеку и не пропускать новости индустрии — в одном месте, без лишнего шума.</p>
-      <p class="muted">Интерфейс заточен под ночные сессии: спокойные градиенты, крупные обложки и быстрые переходы между разделами. Профиль показывает прогресс и статистику, а разделы «Избранное» и «Коллекции» — удобный способ группировать релизы под свои задачи.</p>
-      <p class="muted">В ленте новостей можно ориентироваться по датам и темам; в топах и подборках — смотреть игры по жанрам и годам, чтобы открыть для себя что-то новое.</p>
+      <p class="lead about-lead"><%= t('home_about_p1') %></p>
+      <p class="muted"><%= t('home_about_p2') %></p>
+      <p class="muted"><%= t('home_about_p3') %></p>
     </div>
     <dl class="about-facts">
-      <div><dt>Платформа</dt><dd>Android (Google Play)</dd></div>
-      <div><dt>Интерфейс</dt><dd>Тёмная тема, карусели обложек</dd></div>
-      <div><dt>Данные</dt><dd>Каталог, новости, ваши списки</dd></div>
-      <div><dt>Сайт</dt><dd>Вопросы разработчику и публикация ответов</dd></div>
+      <div><dt><%= t('home_fact_platform') %></dt><dd><%= t('home_fact_platform_val') %></dd></div>
+      <div><dt><%= t('home_fact_ui') %></dt><dd><%= t('home_fact_ui_val') %></dd></div>
+      <div><dt><%= t('home_fact_data') %></dt><dd><%= t('home_fact_data_val') %></dd></div>
+      <div><dt><%= t('home_fact_site') %></dt><dd><%= t('home_fact_site_val') %></dd></div>
     </dl>
   </div>
 </section>
 
 <section class="panel features">
-  <h2 class="panel-title-inline">Возможности</h2>
+  <h2 class="panel-title-inline"><%= t('home_features_h') %></h2>
   <ul class="feature-grid">
-    <li><strong>Профиль</strong> — статистика, диаграммы и прогресс по играм в вашей библиотеке.</li>
-    <li><strong>Новости</strong> — подборка материалов с фильтрами по дате и удобным чтением.</li>
-    <li><strong>Избранное и коллекции</strong> — обложки, оценки, свои списки под любые сценарии.</li>
-    <li><strong>Топы и открытия</strong> — игры по жанрам и годам, чтобы расширять кругозор.</li>
+    <li><%- t('home_feat_1') %></li>
+    <li><%- t('home_feat_2') %></li>
+    <li><%- t('home_feat_3') %></li>
+    <li><%- t('home_feat_4') %></li>
   </ul>
 </section>
 
 <section class="panel carousel-card" aria-labelledby="shots-title">
-  <p class="page-badge page-badge--tight">Скриншоты</p>
-  <h2 id="shots-title" class="panel-title-inline">Интерфейс приложения</h2>
-  <p class="muted carousel-intro">Экраны из приложения (вертикаль 1080×1920). Листайте стрелками, точками внизу или свайпом.</p>
-  <div class="carousel" data-carousel aria-roledescription="carousel" aria-label="Скриншоты GameSearch">
+  <p class="page-badge page-badge--tight"><%= t('home_shots_badge') %></p>
+  <h2 id="shots-title" class="panel-title-inline"><%= t('home_shots_h') %></h2>
+  <p class="muted carousel-intro"><%= t('home_shots_intro') %></p>
+  <div class="carousel" data-carousel data-carousel-slide-prefix="<%= t('carousel_seg_prefix') %>" aria-roledescription="carousel" aria-label="<%= t('carousel_aria') %>">
     <div class="carousel-shell">
-      <button type="button" class="carousel-fab carousel-prev" aria-controls="carousel-track" aria-label="Предыдущий">
+      <button type="button" class="carousel-fab carousel-prev" aria-controls="carousel-track" aria-label="<%= t('carousel_prev') %>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <button type="button" class="carousel-fab carousel-next" aria-controls="carousel-track" aria-label="Следующий">
+      <button type="button" class="carousel-fab carousel-next" aria-controls="carousel-track" aria-label="<%= t('carousel_next') %>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
       </button>
       <div class="carousel-viewport" data-carousel-viewport>
         <ul class="carousel-track" id="carousel-track" role="list">
-          <li class="carousel-slide is-active" data-caption="Профиль и статистика" data-caption-hint="Прогресс и диаграммы">
-            <img src="<%= appUrl('/images/slide-1-profile.png') %>" alt="Профиль GameSearch" width="1080" height="1920" loading="eager" decoding="async">
+          <li class="carousel-slide is-active" data-caption="<%= t('carousel_cap_1') %>" data-caption-hint="<%= t('carousel_hint_1') %>">
+            <img src="<%= assetUrl('/images/slide-1-profile.png') %>" alt="<%= t('carousel_alt_1') %>" width="1080" height="1920" loading="eager" decoding="async">
           </li>
-          <li class="carousel-slide" data-caption="Лента новостей" data-caption-hint="Статьи и фильтр по дате">
-            <img src="<%= appUrl('/images/slide-2-news.png') %>" alt="Новости GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+          <li class="carousel-slide" data-caption="<%= t('carousel_cap_2') %>" data-caption-hint="<%= t('carousel_hint_2') %>">
+            <img src="<%= assetUrl('/images/slide-2-news.png') %>" alt="<%= t('carousel_alt_2') %>" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
-          <li class="carousel-slide" data-caption="Избранное" data-caption-hint="Обложки и оценки">
-            <img src="<%= appUrl('/images/slide-3-favorites.png') %>" alt="Избранное GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+          <li class="carousel-slide" data-caption="<%= t('carousel_cap_3') %>" data-caption-hint="<%= t('carousel_hint_3') %>">
+            <img src="<%= assetUrl('/images/slide-3-favorites.png') %>" alt="<%= t('carousel_alt_3') %>" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
-          <li class="carousel-slide" data-caption="Коллекции" data-caption-hint="Свои списки игр">
-            <img src="<%= appUrl('/images/slide-4-collections.png') %>" alt="Коллекции GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+          <li class="carousel-slide" data-caption="<%= t('carousel_cap_4') %>" data-caption-hint="<%= t('carousel_hint_4') %>">
+            <img src="<%= assetUrl('/images/slide-4-collections.png') %>" alt="<%= t('carousel_alt_4') %>" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
-          <li class="carousel-slide" data-caption="Топы и рейтинги" data-caption-hint="По жанру и году">
-            <img src="<%= appUrl('/images/slide-5-top-games.png') %>" alt="Топы GameSearch" width="1080" height="1920" loading="lazy" decoding="async">
+          <li class="carousel-slide" data-caption="<%= t('carousel_cap_5') %>" data-caption-hint="<%= t('carousel_hint_5') %>">
+            <img src="<%= assetUrl('/images/slide-5-top-games.png') %>" alt="<%= t('carousel_alt_5') %>" width="1080" height="1920" loading="lazy" decoding="async">
           </li>
         </ul>
       </div>
@@ -81,6 +81,6 @@
     <div class="carousel-progress" aria-hidden="true">
       <div class="carousel-progress-fill" id="carousel-progress-fill"></div>
     </div>
-    <div class="carousel-segments" role="tablist" aria-label="Слайды"></div>
+    <div class="carousel-segments" role="tablist" aria-label="<%= t('carousel_tabs_aria') %>"></div>
   </div>
 </section>

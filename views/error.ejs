@@ -1,5 +1,5 @@
 <div class="shell narrow page-intro">
   <h1 class="page-h1 page-h1--gradient"><%= title %></h1>
   <p class="muted lead-tight"><%= message %></p>
-  <p class="back-actions"><a class="btn btn-ghost" href="<%= appUrl('/') %>">На главную</a></p>
+  <p class="back-actions"><a class="btn btn-ghost" href="<%= typeof appUrl !== 'undefined' ? appUrl('/') : '/' %>"><%= typeof t !== 'undefined' ? t('error_back_home') : 'Home' %></a></p>
 </div>

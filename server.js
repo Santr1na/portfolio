@@ -11,6 +11,8 @@ const cookieSession = require("cookie-session");
 const expressLayouts = require("express-ejs-layouts");
 const { nanoid } = require("nanoid");
 
+const i18n = require("./lib/i18n");
+
 const {
   createQuestion,
   listQuestionsForAdmin,
@@ -20,6 +22,8 @@ const {
   publishQuestion,
   slugExists,
   addArticleFeedback,
+  getFeedbackStatsForSlug,
+  listArticleFeedbackDesc,
 } = require("./lib/store");
 const { hashIp } = require("./lib/ip");
 
@@ -61,22 +65,7 @@ function normalizeAppBase(raw) {
 
 const APP_BASE = normalizeAppBase(process.env.APP_BASE_PATH || "");
 
-function appUrl(p) {
-  if (p == null || p === "") {
-    return APP_BASE ? `${APP_BASE}/` : "/";
-  }
-  let pathPart = String(p);
-  if (!pathPart.startsWith("/")) {
-    pathPart = `/${pathPart}`;
-  }
-  if (pathPart === "/") {
-    return APP_BASE ? `${APP_BASE}/` : "/";
-  }
-  return `${APP_BASE}${pathPart}`;
-}
-
 const app = express();
-app.locals.appUrl = appUrl;
 app.locals.appBase = APP_BASE;
 app.set("trust proxy", 1);
 app.set("view engine", "ejs");
@@ -128,7 +117,7 @@ app.use((req, res, next) => {
   }
   res.locals.csrfToken = req.session._csrf;
   res.locals.playUrl = PLAY_URL;
-  res.locals.path = req.path;
+  res.locals.assetUrl = (p) => i18n.assetUrl(APP_BASE, p);
   next();
 });
 
@@ -164,11 +153,12 @@ const feedbackLimiter = rateLimit({
 app.use(express.urlencoded({ extended: true, limit: "48kb" }));
 
 function verifyCsrf(req, res, next) {
+  const tfn = res.locals.t || ((k) => i18n.t(i18n.DEFAULT_LOCALE, k));
   const t = req.body && req.body._csrf;
   if (!t || t !== req.session._csrf) {
     return res.status(403).render("error", {
-      title: "Ошибка",
-      message: "Сессия устарела или подпись формы недействительна. Обновите страницу.",
+      title: tfn("err_title"),
+      message: tfn("err_csrf"),
       layout: "layout",
     });
   }
@@ -177,206 +167,261 @@ function verifyCsrf(req, res, next) {
   next();
 }
 
-function requireAdmin(req, res, next) {
-  if (req.session && req.session.admin) return next();
-  res.redirect(appUrl("/admin/login"));
+function attachPublicLocales(lang) {
+  return (req, res, next) => {
+    res.locals.lang = lang;
+    res.locals.htmlLang = lang === "ru" ? "ru" : "en";
+    res.locals.t = (k) => i18n.t(lang, k);
+    res.locals.path = req.path;
+    res.locals.langSwitcherPath = req.path === "" ? "/" : req.path;
+    res.locals.appUrl = (p) => i18n.pageUrl(APP_BASE, lang, p);
+    res.locals.pageUrl = (loc, p) => i18n.pageUrl(APP_BASE, loc, p);
+    res.locals.dateLocale = i18n.dateLocaleTag(lang);
+    next();
+  };
 }
 
-app.get("/admin", (req, res) => {
-  if (req.session.admin) return res.redirect(appUrl("/admin/questions"));
-  res.redirect(appUrl("/admin/login"));
-});
+function attachAdminLocales(req, res, next) {
+  res.locals.lang = i18n.DEFAULT_LOCALE;
+  res.locals.htmlLang = "en";
+  res.locals.t = (k) => i18n.t(i18n.DEFAULT_LOCALE, k);
+  res.locals.path = req.path;
+  res.locals.langSwitcherPath = "/";
+  res.locals.appUrl = (p) => i18n.adminUrl(APP_BASE, p);
+  res.locals.pageUrl = (loc, p) => i18n.pageUrl(APP_BASE, loc, p);
+  res.locals.dateLocale = i18n.dateLocaleTag(i18n.DEFAULT_LOCALE);
+  next();
+}
 
-app.get("/", (req, res) => {
-  res.render("home", {
-    title: "GameSearch",
-    layout: "layout",
-    pageScripts: [appUrl("/carousel.js")],
+function requireAdmin(req, res, next) {
+  if (req.session && req.session.admin) return next();
+  res.redirect(i18n.adminUrl(APP_BASE, "/admin/login"));
+}
+
+function createPublicRouter(lang) {
+  const r = express.Router();
+  r.use(attachPublicLocales(lang));
+
+  r.get("/", (req, res) => {
+    res.render("home", {
+      title: res.locals.t("home_title"),
+      layout: "layout",
+      pageScripts: [res.locals.assetUrl("/carousel.js")],
+    });
   });
-});
 
-app.get("/ask", (req, res) => {
-  res.render("ask", {
-    title: "Задать вопрос",
-    sent: false,
-    error: null,
-    layout: "layout",
-  });
-});
-
-app.post("/ask", askPostLimiter, verifyCsrf, (req, res) => {
-  if (req.body.website && String(req.body.website).trim() !== "") {
-    return res.render("ask", {
-      title: "Задать вопрос",
-      sent: true,
+  r.get("/ask", (req, res) => {
+    res.render("ask", {
+      title: res.locals.t("ask_title"),
+      sent: false,
       error: null,
       layout: "layout",
     });
-  }
+  });
 
-  const body = String(req.body.body || "").trim();
-  const email = String(req.body.contact_email || "").trim().slice(0, 320);
-
-  if (body.length < 12) {
-    return res.render("ask", {
-      title: "Задать вопрос",
-      sent: false,
-      error: "Вопрос слишком короткий (минимум 12 символов).",
-      layout: "layout",
-    });
-  }
-  if (body.length > 8000) {
-    return res.render("ask", {
-      title: "Задать вопрос",
-      sent: false,
-      error: "Текст слишком длинный.",
-      layout: "layout",
-    });
-  }
-
-  if (email) {
-    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!ok) {
+  r.post("/ask", askPostLimiter, verifyCsrf, (req, res) => {
+    const { t } = res.locals;
+    if (req.body.website && String(req.body.website).trim() !== "") {
       return res.render("ask", {
-        title: "Задать вопрос",
-        sent: false,
-        error: "Некорректный email.",
+        title: t("ask_title"),
+        sent: true,
+        error: null,
         layout: "layout",
       });
     }
-  }
 
-  const id = nanoid();
-  createQuestion({
-    id,
-    body,
-    contactEmail: email || null,
-    createdAt: Date.now(),
-    ipHash: hashIp(req),
+    const body = String(req.body.body || "").trim();
+    const email = String(req.body.contact_email || "").trim().slice(0, 320);
+
+    if (body.length < 12) {
+      return res.render("ask", {
+        title: t("ask_title"),
+        sent: false,
+        error: t("ask_err_short"),
+        layout: "layout",
+      });
+    }
+    if (body.length > 8000) {
+      return res.render("ask", {
+        title: t("ask_title"),
+        sent: false,
+        error: t("ask_err_long"),
+        layout: "layout",
+      });
+    }
+
+    if (email) {
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!ok) {
+        return res.render("ask", {
+          title: t("ask_title"),
+          sent: false,
+          error: t("ask_err_email"),
+          layout: "layout",
+        });
+      }
+    }
+
+    const id = nanoid();
+    createQuestion({
+      id,
+      body,
+      contactEmail: email || null,
+      createdAt: Date.now(),
+      ipHash: hashIp(req),
+    });
+
+    res.render("ask", { title: t("ask_title"), sent: true, error: null, layout: "layout" });
   });
 
-  res.render("ask", { title: "Задать вопрос", sent: true, error: null, layout: "layout" });
-});
-
-app.get("/delete-account", (req, res) => {
-  res.render("delete-account", { title: "Delete account", layout: "layout", htmlLang: "en" });
-});
-
-app.get("/q/:slug", (req, res) => {
-  const row = getPublishedBySlug(req.params.slug);
-  if (!row) {
-    return res.status(404).render("error", {
-      title: "Не найдено",
-      message: "Такой публикации нет.",
+  r.get("/delete-account", (req, res) => {
+    res.render("delete-account", {
+      title: res.locals.t("delete_title"),
       layout: "layout",
     });
-  }
-  res.render("article", {
-    title: "Вопрос и ответ",
-    article: row,
-    thanks: req.query.thanks === "1",
-    errEmpty: req.query.err === "empty",
-    layout: "layout",
-  });
-});
-
-app.post("/q/:slug/feedback", feedbackLimiter, verifyCsrf, (req, res) => {
-  const slug = req.params.slug;
-  const row = getPublishedBySlug(slug);
-  if (!row) {
-    return res.status(404).render("error", { title: "Не найдено", message: "Страница не найдена.", layout: "layout" });
-  }
-
-  if (req.body.company && String(req.body.company).trim() !== "") {
-    return res.redirect(appUrl("/q/" + encodeURIComponent(slug)) + "?thanks=1");
-  }
-
-  let rating = req.body.rating != null && req.body.rating !== "" ? Number(req.body.rating) : null;
-  if (rating != null && (Number.isNaN(rating) || rating < 1 || rating > 5)) {
-    rating = null;
-  }
-  const comment = String(req.body.comment || "").trim().slice(0, 1500);
-  if (!rating && !comment) {
-    return res.redirect(appUrl("/q/" + encodeURIComponent(slug)) + "?err=empty");
-  }
-
-  addArticleFeedback({
-    id: nanoid(),
-    slug,
-    rating,
-    comment: comment || null,
-    createdAt: Date.now(),
-    ipHash: hashIp(req),
   });
 
-  res.redirect(appUrl("/q/" + encodeURIComponent(slug)) + "?thanks=1");
+  r.get("/q/:slug", (req, res) => {
+    const row = getPublishedBySlug(req.params.slug);
+    if (!row) {
+      return res.status(404).render("error", {
+        title: res.locals.t("err_article_title"),
+        message: res.locals.t("err_article_msg"),
+        layout: "layout",
+      });
+    }
+    res.render("article", {
+      title: res.locals.t("article_title"),
+      article: row,
+      thanks: req.query.thanks === "1",
+      errEmpty: req.query.err === "empty",
+      feedbackStats: getFeedbackStatsForSlug(row.slug),
+      layout: "layout",
+    });
+  });
+
+  r.post("/q/:slug/feedback", feedbackLimiter, verifyCsrf, (req, res) => {
+    const slug = req.params.slug;
+    const row = getPublishedBySlug(slug);
+    if (!row) {
+      return res.status(404).render("error", {
+        title: res.locals.t("err404_title"),
+        message: res.locals.t("err404_msg"),
+        layout: "layout",
+      });
+    }
+
+    if (req.body.company && String(req.body.company).trim() !== "") {
+      return res.redirect(res.locals.appUrl("/q/" + encodeURIComponent(slug)) + "?thanks=1");
+    }
+
+    let rating = req.body.rating != null && req.body.rating !== "" ? Number(req.body.rating) : null;
+    if (rating != null && (Number.isNaN(rating) || rating < 1 || rating > 5)) {
+      rating = null;
+    }
+    const comment = String(req.body.comment || "").trim().slice(0, 1500);
+    if (!rating && !comment) {
+      return res.redirect(res.locals.appUrl("/q/" + encodeURIComponent(slug)) + "?err=empty");
+    }
+
+    addArticleFeedback({
+      id: nanoid(),
+      slug,
+      rating,
+      comment: comment || null,
+      createdAt: Date.now(),
+      ipHash: hashIp(req),
+    });
+
+    res.redirect(res.locals.appUrl("/q/" + encodeURIComponent(slug)) + "?thanks=1");
+  });
+
+  return r;
+}
+
+app.get("/health", (req, res) => {
+  res.type("text").send("ok");
 });
 
-app.get("/admin/login", (req, res) => {
-  if (req.session.admin) return res.redirect(appUrl("/admin/questions"));
-  res.render("admin-login", { title: "Вход", error: null, layout: "layout" });
+app.use(createPublicRouter("en"));
+app.use("/ru", createPublicRouter("ru"));
+
+const adminRouter = express.Router();
+adminRouter.use(attachAdminLocales);
+
+adminRouter.get("/", (req, res) => {
+  if (req.session.admin) return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions"));
+  res.redirect(i18n.adminUrl(APP_BASE, "/admin/login"));
 });
 
-app.post("/admin/login", loginLimiter, verifyCsrf, (req, res) => {
+adminRouter.get("/login", (req, res) => {
+  if (req.session.admin) return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions"));
+  res.render("admin-login", { title: res.locals.t("admin_login_title"), error: null, layout: "layout" });
+});
+
+adminRouter.post("/login", loginLimiter, verifyCsrf, (req, res) => {
   const password = String(req.body.password || "");
   const stored = process.env.ADMIN_PASSWORD_SCRYPT;
+  const { t } = res.locals;
 
   if (!stored) {
     return res.status(503).render("admin-login", {
-      title: "Вход",
-      error: "Сервер не настроен: задайте ADMIN_PASSWORD_SCRYPT в окружении.",
+      title: t("admin_login_title"),
+      error: t("admin_err_no_hash"),
       layout: "layout",
     });
   }
 
   if (!verifyAdminPassword(password)) {
     return res.render("admin-login", {
-      title: "Вход",
-      error: "Неверный пароль.",
+      title: t("admin_login_title"),
+      error: t("admin_err_bad_password"),
       layout: "layout",
     });
   }
 
   req.session.admin = true;
-  res.redirect(appUrl("/admin/questions"));
+  res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions"));
 });
 
-app.post("/admin/logout", verifyCsrf, (req, res) => {
+adminRouter.post("/logout", verifyCsrf, (req, res) => {
   req.session = null;
-  res.redirect(appUrl("/admin/login"));
+  res.redirect(i18n.adminUrl(APP_BASE, "/admin/login"));
 });
 
-app.get("/admin/questions", requireAdmin, (req, res) => {
+adminRouter.get("/questions", requireAdmin, (req, res) => {
   const questions = listQuestionsForAdmin();
+  const articleFeedback = listArticleFeedbackDesc(150);
   res.render("admin-questions", {
-    title: "Вопросы",
+    title: res.locals.t("admin_panel_title"),
     questions,
+    articleFeedback,
     query: req.query,
     layout: "layout",
   });
 });
 
-app.post("/admin/questions/:id/answer", requireAdmin, verifyCsrf, (req, res) => {
+adminRouter.post("/questions/:id/answer", requireAdmin, verifyCsrf, (req, res) => {
   const id = req.params.id;
   const answer = String(req.body.answer || "").trim();
   if (!getQuestionById(id)) {
-    return res.redirect(appUrl("/admin/questions"));
+    return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions"));
   }
   if (answer.length > 20000) {
-    return res.redirect(appUrl("/admin/questions") + "?err=long#q-" + encodeURIComponent(id));
+    return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions") + "?err=long#q-" + encodeURIComponent(id));
   }
   setAnswer(id, answer || null);
-  res.redirect(appUrl("/admin/questions") + "#q-" + encodeURIComponent(id));
+  res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions") + "#q-" + encodeURIComponent(id));
 });
 
-app.post("/admin/questions/:id/publish", requireAdmin, verifyCsrf, (req, res) => {
+adminRouter.post("/questions/:id/publish", requireAdmin, verifyCsrf, (req, res) => {
   const id = req.params.id;
   const q = getQuestionById(id);
   if (!q || !String(q.answer || "").trim()) {
-    return res.redirect(appUrl("/admin/questions") + "?err=noanswer");
+    return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions") + "?err=noanswer");
   }
   if (q.status === "published" && q.slug) {
-    return res.redirect(appUrl("/q/" + encodeURIComponent(q.slug)));
+    return res.redirect(i18n.pageUrl(APP_BASE, i18n.DEFAULT_LOCALE, "/q/" + encodeURIComponent(q.slug)));
   }
 
   let slug;
@@ -388,18 +433,16 @@ app.post("/admin/questions/:id/publish", requireAdmin, verifyCsrf, (req, res) =>
     }
   }
   if (!slug) {
-    return res.redirect(appUrl("/admin/questions") + "?err=slug");
+    return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions") + "?err=slug");
   }
 
   if (!publishQuestion(id, slug, Date.now())) {
-    return res.redirect(appUrl("/admin/questions") + "?err=publish");
+    return res.redirect(i18n.adminUrl(APP_BASE, "/admin/questions") + "?err=publish");
   }
-  res.redirect(appUrl("/q/" + slug));
+  res.redirect(i18n.pageUrl(APP_BASE, i18n.DEFAULT_LOCALE, "/q/" + slug));
 });
 
-app.get("/health", (req, res) => {
-  res.type("text").send("ok");
-});
+app.use("/admin", adminRouter);
 
 const publicDir = path.join(__dirname, "public");
 const imagesDir = path.join(__dirname, "images");
@@ -410,15 +453,44 @@ if (APP_BASE) {
   app.use(`${APP_BASE}/images`, express.static(imagesDir));
 }
 
+function attachErrorLocals(req, res, next) {
+  if (!res.locals.t) {
+    res.locals.lang = i18n.DEFAULT_LOCALE;
+    res.locals.htmlLang = "en";
+    res.locals.t = (k) => i18n.t(i18n.DEFAULT_LOCALE, k);
+    res.locals.path = req.path;
+    res.locals.langSwitcherPath = "/";
+    res.locals.appUrl = (p) => i18n.pageUrl(APP_BASE, i18n.DEFAULT_LOCALE, p);
+    res.locals.pageUrl = (loc, p) => i18n.pageUrl(APP_BASE, loc, p);
+    res.locals.dateLocale = i18n.dateLocaleTag(i18n.DEFAULT_LOCALE);
+  }
+  next();
+}
+
+app.use(attachErrorLocals);
 app.use((req, res) => {
-  res.status(404).render("error", { title: "404", message: "Страница не найдена.", layout: "layout" });
+  res.status(404).render("error", {
+    title: res.locals.t("err404_title"),
+    message: res.locals.t("err404_msg"),
+    layout: "layout",
+  });
 });
 
 app.use((err, req, res, next) => {
   console.error(err);
+  if (!res.locals.t) {
+    res.locals.lang = i18n.DEFAULT_LOCALE;
+    res.locals.htmlLang = "en";
+    res.locals.t = (k) => i18n.t(i18n.DEFAULT_LOCALE, k);
+    res.locals.path = req.path;
+    res.locals.langSwitcherPath = "/";
+    res.locals.appUrl = (p) => i18n.pageUrl(APP_BASE, i18n.DEFAULT_LOCALE, p);
+    res.locals.pageUrl = (loc, p) => i18n.pageUrl(APP_BASE, loc, p);
+    res.locals.dateLocale = i18n.dateLocaleTag(i18n.DEFAULT_LOCALE);
+  }
   res.status(500).render("error", {
-    title: "Ошибка",
-    message: "Внутренняя ошибка сервера.",
+    title: res.locals.t("err500_title"),
+    message: res.locals.t("err500_msg"),
     layout: "layout",
   });
 });

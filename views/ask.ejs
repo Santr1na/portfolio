@@ -1,27 +1,27 @@
 <div class="shell narrow page-intro">
-  <p class="page-badge">Обратная связь</p>
-  <h1 class="page-h1 page-h1--gradient">Задать вопрос</h1>
+  <p class="page-badge"><%= t('ask_badge') %></p>
+  <h1 class="page-h1 page-h1--gradient"><%= t('ask_h1') %></h1>
   <% if (sent) { %>
-  <div class="alert alert-success">Спасибо! Сообщение получено. Мы ответим, когда сможем — следите за публикациями на сайте.</div>
+  <div class="alert alert-success"><%= t('ask_success') %></div>
   <% } else { %>
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
-  <p class="muted lead-tight">Опишите вопрос по приложению. Защита от спама: лимит отправок с одного IP, проверка формы.</p>
+  <p class="muted lead-tight"><%= t('ask_intro') %></p>
   <div class="panel form-panel">
   <form method="post" action="<%= appUrl('/ask') %>" class="stack-form stack-form--flush">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="hp-field" aria-hidden="true">
-      <label for="website">Не заполняйте</label>
+      <label for="website"><%= t('ask_hp_label') %></label>
       <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
     </div>
     <label class="field">
-      <span>Ваш вопрос</span>
-      <textarea name="body" required minlength="12" maxlength="8000" rows="8" placeholder="Например: как синхронизировать избранное между устройствами?"></textarea>
+      <span><%= t('ask_field_body') %></span>
+      <textarea name="body" required minlength="12" maxlength="8000" rows="8" placeholder="<%= t('ask_body_ph') %>"></textarea>
     </label>
     <label class="field">
-      <span>Email для ответа (необязательно)</span>
+      <span><%= t('ask_field_email') %></span>
       <input type="email" name="contact_email" maxlength="320" placeholder="you@example.com">
     </label>
-    <button type="submit" class="btn btn-primary btn-send">Отправить</button>
+    <button type="submit" class="btn btn-primary btn-send"><%= t('ask_submit') %></button>
   </form>
   </div>
   <% } %>

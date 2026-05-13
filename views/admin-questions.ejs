@@ -1,29 +1,29 @@
 <div class="shell wide page-intro">
   <div class="admin-head">
     <div>
-      <p class="page-badge page-badge--tight">Панель</p>
-      <h1 class="page-h1 page-h1--gradient">Вопросы пользователей</h1>
+      <p class="page-badge page-badge--tight"><%= t('admin_panel_badge') %></p>
+      <h1 class="page-h1 page-h1--gradient"><%= t('admin_panel_h1') %></h1>
     </div>
     <form method="post" action="<%= appUrl('/admin/logout') %>" class="inline-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit" class="btn btn-ghost btn-sm">Выйти</button>
+      <button type="submit" class="btn btn-ghost btn-sm"><%= t('admin_logout') %></button>
     </form>
   </div>
 
-  <% if (query.err === 'noanswer') { %><div class="alert alert-error">Сначала сохраните ответ.</div><% } %>
-  <% if (query.err === 'long') { %><div class="alert alert-error">Ответ слишком длинный.</div><% } %>
-  <% if (query.err === 'slug') { %><div class="alert alert-error">Не удалось создать ссылку. Повторите.</div><% } %>
-  <% if (query.err === 'publish') { %><div class="alert alert-error">Не удалось опубликовать.</div><% } %>
+  <% if (query.err === 'noanswer') { %><div class="alert alert-error"><%= t('admin_err_noanswer') %></div><% } %>
+  <% if (query.err === 'long') { %><div class="alert alert-error"><%= t('admin_err_long') %></div><% } %>
+  <% if (query.err === 'slug') { %><div class="alert alert-error"><%= t('admin_err_slug') %></div><% } %>
+  <% if (query.err === 'publish') { %><div class="alert alert-error"><%= t('admin_err_publish') %></div><% } %>
 
   <% if (!questions.length) { %>
-  <p class="muted">Пока нет вопросов.</p>
+  <p class="muted"><%= t('admin_empty') %></p>
   <% } %>
 
   <% questions.forEach(function (q) { %>
   <article class="admin-card" id="q-<%= q.id %>">
     <div class="admin-meta">
-      <span class="tag tag-<%= q.status %>"><%= q.status %></span>
-      <time datetime="<%= new Date(q.created_at).toISOString() %>"><%= new Date(q.created_at).toLocaleString('ru-RU') %></time>
+      <span class="tag tag-<%= q.status %>"><%= t('status_' + q.status) %></span>
+      <time datetime="<%= new Date(q.created_at).toISOString() %>"><%= new Date(q.created_at).toLocaleString(typeof dateLocale !== 'undefined' ? dateLocale : 'en-GB') %></time>
       <% if (q.contact_email) { %><span class="muted"><%= q.contact_email %></span><% } %>
     </div>
     <div class="admin-q"><%= q.body %></div>
@@ -31,20 +31,51 @@
     <form method="post" action="<%= appUrl('/admin/questions/' + q.id + '/answer') %>" class="stack-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <label class="field">
-        <span>Ответ</span>
-        <textarea name="answer" rows="6" maxlength="20000" placeholder="Текст ответа"><%= q.answer || '' %></textarea>
+        <span><%= t('admin_answer') %></span>
+        <textarea name="answer" rows="6" maxlength="20000" placeholder="<%= t('admin_answer_ph') %>"><%= q.answer || '' %></textarea>
       </label>
-      <button type="submit" class="btn btn-primary btn-sm">Сохранить ответ</button>
+      <button type="submit" class="btn btn-primary btn-sm"><%= t('admin_save_answer') %></button>
     </form>
 
     <% if (q.status === 'published' && q.slug) { %>
-    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="<%= appUrl('/q/' + q.slug) %>">Открыть публикацию</a></p>
+    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="<%= pageUrl('en', '/q/' + q.slug) %>"><%= t('admin_open_public') %></a></p>
     <% } else if (String(q.answer || '').trim()) { %>
     <form method="post" action="<%= appUrl('/admin/questions/' + q.id + '/publish') %>" class="inline-form admin-publish-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit" class="btn btn-ghost btn-sm">Выложить на отдельную страницу</button>
+      <button type="submit" class="btn btn-ghost btn-sm"><%= t('admin_publish') %></button>
     </form>
     <% } %>
   </article>
   <% }) %>
+
+  <section class="panel admin-feedback-wrap">
+    <h2 class="panel-h2"><%= t('admin_feedback_h') %></h2>
+    <p class="muted small"><%= t('admin_feedback_intro') %></p>
+    <% if (!articleFeedback || !articleFeedback.length) { %>
+    <p class="muted"><%= t('admin_feedback_empty') %></p>
+    <% } else { %>
+    <div class="table-scroll">
+      <table class="admin-feedback-table">
+        <thead>
+          <tr>
+            <th><%= t('admin_feedback_th_date') %></th>
+            <th><%= t('admin_feedback_th_slug') %></th>
+            <th><%= t('admin_feedback_th_rating') %></th>
+            <th><%= t('admin_feedback_th_comment') %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% articleFeedback.forEach(function (fb) { %>
+          <tr>
+            <td><time datetime="<%= new Date(fb.created_at).toISOString() %>"><%= new Date(fb.created_at).toLocaleString(typeof dateLocale !== 'undefined' ? dateLocale : 'en-GB') %></time></td>
+            <td><code class="slug-cell"><%= fb.slug %></code></td>
+            <td><%= fb.rating != null ? fb.rating : '—' %></td>
+            <td class="comment-cell"><%= (fb.comment || '').slice(0, 400) %><%= (fb.comment && fb.comment.length > 400) ? '…' : '' %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
 </div>

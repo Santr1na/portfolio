@@ -1,15 +1,15 @@
 <div class="shell narrow page-intro">
-  <p class="page-badge">Доступ</p>
-  <h1 class="page-h1 page-h1--gradient">Админ</h1>
+  <p class="page-badge"><%= t('admin_badge') %></p>
+  <h1 class="page-h1 page-h1--gradient"><%= t('admin_h1') %></h1>
   <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
   <div class="panel form-panel form-panel--narrow">
   <form method="post" action="<%= appUrl('/admin/login') %>" class="stack-form stack-form--flush">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <label class="field">
-      <span>Пароль</span>
+      <span><%= t('admin_password') %></span>
       <input type="password" name="password" required autocomplete="current-password">
     </label>
-    <button type="submit" class="btn btn-primary btn-send">Войти</button>
+    <button type="submit" class="btn btn-primary btn-send"><%= t('admin_submit') %></button>
   </form>
   </div>
 </div>

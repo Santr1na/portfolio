@@ -1,6 +1,7 @@
 (function () {
   var root = document.querySelector("[data-carousel]");
   if (!root) return;
+  var slideLabelPrefix = (root.getAttribute("data-carousel-slide-prefix") || "Slide ").trim();
   var track = root.querySelector(".carousel-track");
   var slides = track ? [].slice.call(track.children) : [];
   var prev = root.querySelector(".carousel-prev");
@@ -50,9 +51,25 @@
     progressFill.style.width = ((i + 1) / total) * 100 + "%";
   }
 
+  /** translateX(%) is relative to the track width, not one slide — use px per slide. */
+  function slideStepPx() {
+    var el = slides[0];
+    if (!el) return 0;
+    var r = el.getBoundingClientRect();
+    if (r.width > 1) return r.width;
+    return viewport ? viewport.offsetWidth : 0;
+  }
+
+  function applyTransform() {
+    var step = slideStepPx();
+    if (step > 0) {
+      track.style.transform = "translateX(-" + i * step + "px)";
+    }
+  }
+
   function go(n) {
     i = (n + total) % total;
-    track.style.transform = "translateX(-" + i * 100 + "%)";
+    applyTransform();
     setCaption();
     setActiveSlide();
     updateSegments();
@@ -65,7 +82,7 @@
     b.type = "button";
     b.className = "carousel-seg";
     b.setAttribute("role", "tab");
-    b.setAttribute("aria-label", "Слайд " + (j + 1));
+    b.setAttribute("aria-label", slideLabelPrefix + (j + 1));
     b.addEventListener("click", function () {
       go(j);
     });
@@ -113,5 +130,24 @@
     );
   }
 
-  go(0);
+  function onResize() {
+    applyTransform();
+  }
+  window.addEventListener("resize", onResize);
+  if (viewport && typeof ResizeObserver !== "undefined") {
+    var ro = new ResizeObserver(onResize);
+    ro.observe(viewport);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      requestAnimationFrame(function () {
+        go(0);
+      });
+    });
+  } else {
+    requestAnimationFrame(function () {
+      go(0);
+    });
+  }
 })();
