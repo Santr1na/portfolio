@@ -263,10 +263,21 @@ function createPublicRouter(lang) {
   r.use(attachPublicLocales(lang));
 
   r.get("/", (req, res) => {
+    const base = APP_BASE || forwardedAssetBase(req);
+    const canonicalPath = i18n.pageUrl(APP_BASE, lang, "/");
+    const host = req.get("host") || "localhost";
     res.render("home", {
       title: res.locals.t("home_title"),
       layout: "layout",
-      pageScripts: [res.locals.assetUrl("/carousel.js")],
+      isHome: true,
+      metaDescription: res.locals.t("home_meta_description"),
+      ogTitle: res.locals.t("home_og_title"),
+      canonicalUrl: `${req.protocol}://${host}${canonicalPath}`,
+      pageStyles: [res.locals.assetUrl("/landing.css")],
+      pageScripts: [
+        res.locals.assetUrl("/landing.js"),
+        res.locals.assetUrl("/carousel.js"),
+      ],
     });
   });
 

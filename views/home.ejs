@@ -1,87 +1,290 @@
-<section class="hero hero--mesh">
-  <div class="hero-head">
-    <div class="hero-app-badge" aria-hidden="true">
-      <img class="hero-app-logo-img" src="<%= assetUrl('/images/ic_launcher_background.png') %>" alt="" width="512" height="512" decoding="async">
-    </div>
-    <div class="hero-copy">
-      <p class="page-badge"><%= t('home_badge_welcome') %></p>
-      <h1 class="hero-title"><%= t('home_hero_title') %></h1>
-      <p class="lead hero-lead"><%= t('home_hero_lead') %></p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer"><%= t('home_btn_play') %></a>
-        <a class="btn btn-ghost" href="<%= appUrl('/review') %>"><%= t('home_btn_review') %></a>
-        <a class="btn btn-ghost" href="<%= appUrl('/ask') %>"><%= t('home_btn_ask') %></a>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="landing" id="top">
 
-<section class="panel about-app">
-  <h2 class="panel-title-inline"><%= t('home_about_h') %></h2>
-  <div class="about-app-grid">
-    <div class="about-app-main">
-      <p class="lead about-lead"><%= t('home_about_p1') %></p>
-      <p class="muted"><%= t('home_about_p2') %></p>
-      <p class="muted"><%= t('home_about_p3') %></p>
-    </div>
-    <dl class="about-facts">
-      <div><dt><%= t('home_fact_platform') %></dt><dd><%= t('home_fact_platform_val') %></dd></div>
-      <div><dt><%= t('home_fact_ui') %></dt><dd><%= t('home_fact_ui_val') %></dd></div>
-      <div><dt><%= t('home_fact_data') %></dt><dd><%= t('home_fact_data_val') %></dd></div>
-      <div><dt><%= t('home_fact_site') %></dt><dd><%= t('home_fact_site_val') %></dd></div>
-    </dl>
-  </div>
-</section>
-
-<section class="panel features">
-  <h2 class="panel-title-inline"><%= t('home_features_h') %></h2>
-  <ul class="feature-grid">
-    <li><%- t('home_feat_1') %></li>
-    <li><%- t('home_feat_2') %></li>
-    <li><%- t('home_feat_3') %></li>
-    <li><%- t('home_feat_4') %></li>
-  </ul>
-</section>
-
-<section class="panel carousel-card" aria-labelledby="shots-title">
-  <p class="page-badge page-badge--tight"><%= t('home_shots_badge') %></p>
-  <h2 id="shots-title" class="panel-title-inline"><%= t('home_shots_h') %></h2>
-  <p class="muted carousel-intro"><%= t('home_shots_intro') %></p>
-  <div class="carousel" data-carousel data-carousel-slide-prefix="<%= t('carousel_seg_prefix') %>" aria-roledescription="carousel" aria-label="<%= t('carousel_aria') %>">
-    <div class="carousel-shell">
-      <button type="button" class="carousel-fab carousel-prev" aria-controls="carousel-track" aria-label="<%= t('carousel_prev') %>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <button type="button" class="carousel-fab carousel-next" aria-controls="carousel-track" aria-label="<%= t('carousel_next') %>">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-      <div class="carousel-viewport" data-carousel-viewport>
-        <ul class="carousel-track" id="carousel-track" role="list">
-          <li class="carousel-slide is-active" data-caption="<%= t('carousel_cap_1') %>" data-caption-hint="<%= t('carousel_hint_1') %>">
-            <img src="<%= assetUrl('/images/slide-1-profile.png') %>" alt="<%= t('carousel_alt_1') %>" width="1080" height="1920" loading="eager" decoding="async">
-          </li>
-          <li class="carousel-slide" data-caption="<%= t('carousel_cap_2') %>" data-caption-hint="<%= t('carousel_hint_2') %>">
-            <img src="<%= assetUrl('/images/slide-2-news.png') %>" alt="<%= t('carousel_alt_2') %>" width="1080" height="1920" loading="lazy" decoding="async">
-          </li>
-          <li class="carousel-slide" data-caption="<%= t('carousel_cap_3') %>" data-caption-hint="<%= t('carousel_hint_3') %>">
-            <img src="<%= assetUrl('/images/slide-3-favorites.png') %>" alt="<%= t('carousel_alt_3') %>" width="1080" height="1920" loading="lazy" decoding="async">
-          </li>
-          <li class="carousel-slide" data-caption="<%= t('carousel_cap_4') %>" data-caption-hint="<%= t('carousel_hint_4') %>">
-            <img src="<%= assetUrl('/images/slide-4-collections.png') %>" alt="<%= t('carousel_alt_4') %>" width="1080" height="1920" loading="lazy" decoding="async">
-          </li>
-          <li class="carousel-slide" data-caption="<%= t('carousel_cap_5') %>" data-caption-hint="<%= t('carousel_hint_5') %>">
-            <img src="<%= assetUrl('/images/slide-5-top-games.png') %>" alt="<%= t('carousel_alt_5') %>" width="1080" height="1920" loading="lazy" decoding="async">
-          </li>
+  <!-- Hero -->
+  <section class="lp-hero" aria-labelledby="hero-title">
+    <div class="lp-hero__glow lp-hero__glow--1" aria-hidden="true"></div>
+    <div class="lp-hero__glow lp-hero__glow--2" aria-hidden="true"></div>
+    <div class="lp-hero__grid" aria-hidden="true"></div>
+    <div class="lp-container lp-hero__inner">
+      <div class="lp-hero__copy" data-reveal>
+        <p class="lp-badge"><span class="lp-badge__dot" aria-hidden="true"></span><%= t('home_badge_welcome') %></p>
+        <h1 id="hero-title" class="lp-hero__title">
+          <span class="lp-hero__title-line"><%= t('home_hero_title_line1') %></span>
+          <span class="lp-hero__title-accent"><%= t('home_hero_title_accent') %></span>
+          <span class="lp-hero__title-line"><%= t('home_hero_title_line2') %></span>
+        </h1>
+        <p class="lp-hero__lead"><%= t('home_hero_lead') %></p>
+        <div class="lp-hero__actions">
+          <a class="lp-btn lp-btn--primary" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85A1.5 1.5 0 0 1 3 20.5zm13.81-5.38l6.42 3.54c.54.3 1.23.09 1.5-.45a10.1 10.1 0 0 0 0-9.42c-.27-.54-.96-.75-1.5-.45l-6.42 3.54zm-1.62-3.12L3.84 4.65A1.49 1.49 0 0 1 5.69 3l9.12 5.01-1.62 2.99z"/></svg>
+            <%= t('home_btn_play') %>
+          </a>
+          <a class="lp-btn lp-btn--ghost" href="#features"><%= t('home_btn_explore') %></a>
+        </div>
+        <ul class="lp-chips" aria-label="Highlights">
+          <li class="lp-chip"><%= t('home_hero_chip_1') %></li>
+          <li class="lp-chip"><%= t('home_hero_chip_2') %></li>
+          <li class="lp-chip"><%= t('home_hero_chip_3') %></li>
         </ul>
       </div>
+      <div class="lp-hero__visual" data-reveal data-reveal-delay="2" data-parallax="0.06">
+        <div class="lp-mockup" aria-hidden="true">
+          <div class="lp-mockup__orbit lp-mockup__orbit--1"></div>
+          <div class="lp-mockup__orbit lp-mockup__orbit--2"></div>
+          <div class="lp-mockup__frame">
+            <div class="lp-mockup__screen">
+              <img src="<%= assetUrl('/images/slide-1-profile.png') %>" alt="" width="1080" height="1920" loading="eager" decoding="async">
+            </div>
+            <div class="lp-mockup__shine"></div>
+          </div>
+          <div class="lp-mockup__float lp-mockup__float--1">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="lp-mockup__float lp-mockup__float--2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </div>
+          <div class="lp-mockup__float lp-mockup__float--3">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="carousel-meta">
-      <p class="carousel-caption" id="carousel-caption" aria-live="polite"></p>
-      <span class="carousel-counter" id="carousel-counter"></span>
+  </section>
+
+  <!-- Benefits -->
+  <section class="lp-section" id="benefits" aria-labelledby="benefits-title">
+    <div class="lp-container">
+      <header class="lp-section__head" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_benefits_badge') %></p>
+        <h2 id="benefits-title" class="lp-section__title"><%= t('home_benefits_title') %></h2>
+        <p class="lp-section__lead"><%= t('home_benefits_lead') %></p>
+      </header>
+      <div class="lp-benefits-grid">
+        <article class="lp-card lp-card--glass" data-reveal data-reveal-delay="1">
+          <div class="lp-card__icon lp-card__icon--violet" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h3 class="lp-card__title"><%= t('home_benefit_1_title') %></h3>
+          <p class="lp-card__desc"><%= t('home_benefit_1_desc') %></p>
+        </article>
+        <article class="lp-card lp-card--glass" data-reveal data-reveal-delay="2">
+          <div class="lp-card__icon lp-card__icon--cyan" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+          </div>
+          <h3 class="lp-card__title"><%= t('home_benefit_2_title') %></h3>
+          <p class="lp-card__desc"><%= t('home_benefit_2_desc') %></p>
+        </article>
+        <article class="lp-card lp-card--glass" data-reveal data-reveal-delay="3">
+          <div class="lp-card__icon lp-card__icon--pink" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h3 class="lp-card__title"><%= t('home_benefit_3_title') %></h3>
+          <p class="lp-card__desc"><%= t('home_benefit_3_desc') %></p>
+        </article>
+        <article class="lp-card lp-card--glass" data-reveal data-reveal-delay="4">
+          <div class="lp-card__icon lp-card__icon--green" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          </div>
+          <h3 class="lp-card__title"><%= t('home_benefit_4_title') %></h3>
+          <p class="lp-card__desc"><%= t('home_benefit_4_desc') %></p>
+        </article>
+      </div>
     </div>
-    <div class="carousel-progress" aria-hidden="true">
-      <div class="carousel-progress-fill" id="carousel-progress-fill"></div>
+  </section>
+
+  <!-- Features -->
+  <section class="lp-section lp-section--alt" id="features" aria-labelledby="features-title">
+    <div class="lp-container">
+      <header class="lp-section__head" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_features_badge') %></p>
+        <h2 id="features-title" class="lp-section__title"><%= t('home_features_h') %></h2>
+        <p class="lp-section__lead"><%= t('home_features_lead') %></p>
+      </header>
+      <div class="lp-features-grid">
+        <% var feats = [
+          { key: 1, icon: 'user' },
+          { key: 2, icon: 'news' },
+          { key: 3, icon: 'heart' },
+          { key: 4, icon: 'grid' },
+          { key: 5, icon: 'trophy' },
+          { key: 6, icon: 'search' }
+        ]; %>
+        <% feats.forEach(function(f, idx) { %>
+        <article class="lp-feature-card" data-reveal data-reveal-delay="<%= (idx % 3) + 1 %>">
+          <div class="lp-feature-card__icon" aria-hidden="true">
+            <% if (f.icon === 'user') { %>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <% } else if (f.icon === 'news') { %>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8V6z"/></svg>
+            <% } else if (f.icon === 'heart') { %>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <% } else if (f.icon === 'grid') { %>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <% } else if (f.icon === 'trophy') { %>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+            <% } else { %>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <% } %>
+          </div>
+          <h3 class="lp-feature-card__title"><%= t('home_feat_' + f.key + '_title') %></h3>
+          <p class="lp-feature-card__desc"><%= t('home_feat_' + f.key + '_desc') %></p>
+        </article>
+        <% }); %>
+      </div>
     </div>
-    <div class="carousel-segments" role="tablist" aria-label="<%= t('carousel_tabs_aria') %>"></div>
-  </div>
-</section>
+  </section>
+
+  <!-- Screenshots -->
+  <section class="lp-section" id="screenshots" aria-labelledby="shots-title">
+    <div class="lp-container">
+      <header class="lp-section__head" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_shots_badge') %></p>
+        <h2 id="shots-title" class="lp-section__title"><%= t('home_shots_h') %></h2>
+        <p class="lp-section__lead"><%= t('home_shots_intro') %></p>
+      </header>
+      <div class="lp-carousel-wrap" data-reveal data-reveal-delay="1">
+        <div class="carousel" data-carousel data-carousel-slide-prefix="<%= t('carousel_seg_prefix') %>" aria-roledescription="carousel" aria-label="<%= t('carousel_aria') %>">
+          <div class="carousel-shell">
+            <button type="button" class="carousel-fab carousel-prev" aria-controls="carousel-track" aria-label="<%= t('carousel_prev') %>">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <button type="button" class="carousel-fab carousel-next" aria-controls="carousel-track" aria-label="<%= t('carousel_next') %>">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <div class="carousel-viewport" data-carousel-viewport>
+              <ul class="carousel-track" id="carousel-track" role="list">
+                <li class="carousel-slide is-active" data-caption="<%= t('carousel_cap_1') %>" data-caption-hint="<%= t('carousel_hint_1') %>">
+                  <img src="<%= assetUrl('/images/slide-1-profile.png') %>" alt="<%= t('carousel_alt_1') %>" width="1080" height="1920" loading="eager" decoding="async">
+                </li>
+                <li class="carousel-slide" data-caption="<%= t('carousel_cap_2') %>" data-caption-hint="<%= t('carousel_hint_2') %>">
+                  <img src="<%= assetUrl('/images/slide-2-news.png') %>" alt="<%= t('carousel_alt_2') %>" width="1080" height="1920" loading="lazy" decoding="async">
+                </li>
+                <li class="carousel-slide" data-caption="<%= t('carousel_cap_3') %>" data-caption-hint="<%= t('carousel_hint_3') %>">
+                  <img src="<%= assetUrl('/images/slide-3-favorites.png') %>" alt="<%= t('carousel_alt_3') %>" width="1080" height="1920" loading="lazy" decoding="async">
+                </li>
+                <li class="carousel-slide" data-caption="<%= t('carousel_cap_4') %>" data-caption-hint="<%= t('carousel_hint_4') %>">
+                  <img src="<%= assetUrl('/images/slide-4-collections.png') %>" alt="<%= t('carousel_alt_4') %>" width="1080" height="1920" loading="lazy" decoding="async">
+                </li>
+                <li class="carousel-slide" data-caption="<%= t('carousel_cap_5') %>" data-caption-hint="<%= t('carousel_hint_5') %>">
+                  <img src="<%= assetUrl('/images/slide-5-top-games.png') %>" alt="<%= t('carousel_alt_5') %>" width="1080" height="1920" loading="lazy" decoding="async">
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="carousel-meta">
+            <p class="carousel-caption" id="carousel-caption" aria-live="polite"></p>
+            <span class="carousel-counter" id="carousel-counter"></span>
+          </div>
+          <div class="carousel-progress" aria-hidden="true">
+            <div class="carousel-progress-fill" id="carousel-progress-fill"></div>
+          </div>
+          <div class="carousel-segments" role="tablist" aria-label="<%= t('carousel_tabs_aria') %>"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="lp-section lp-section--alt" id="how-it-works" aria-labelledby="how-title">
+    <div class="lp-container">
+      <header class="lp-section__head" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_how_badge') %></p>
+        <h2 id="how-title" class="lp-section__title"><%= t('home_how_title') %></h2>
+      </header>
+      <ol class="lp-steps">
+        <% for (var step = 1; step <= 3; step++) { %>
+        <li class="lp-step" data-reveal data-reveal-delay="<%= step %>">
+          <div class="lp-step__num" aria-hidden="true"><%= step %></div>
+          <div class="lp-step__body">
+            <h3 class="lp-step__title"><%= t('home_how_' + step + '_title') %></h3>
+            <p class="lp-step__desc"><%= t('home_how_' + step + '_desc') %></p>
+          </div>
+        </li>
+        <% } %>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="lp-section lp-stats" id="stats" aria-labelledby="stats-title">
+    <div class="lp-container">
+      <header class="lp-section__head lp-section__head--center" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_stats_badge') %></p>
+        <h2 id="stats-title" class="lp-section__title"><%= t('home_stats_title') %></h2>
+      </header>
+      <div class="lp-stats-grid">
+        <% for (var stat = 1; stat <= 4; stat++) { %>
+        <div class="lp-stat" data-reveal data-reveal-delay="<%= stat %>">
+          <span class="lp-stat__value" data-count="<%= t('home_stat_' + stat + '_value') %>"><%= t('home_stat_' + stat + '_value') %></span>
+          <span class="lp-stat__label"><%= t('home_stat_' + stat + '_label') %></span>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="lp-section" id="testimonials" aria-labelledby="testimonials-title">
+    <div class="lp-container">
+      <header class="lp-section__head" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_testimonials_badge') %></p>
+        <h2 id="testimonials-title" class="lp-section__title"><%= t('home_testimonials_title') %></h2>
+      </header>
+      <div class="lp-testimonials-grid">
+        <% for (var rev = 1; rev <= 3; rev++) { %>
+        <blockquote class="lp-testimonial" data-reveal data-reveal-delay="<%= rev %>">
+          <div class="lp-testimonial__stars" aria-hidden="true">
+            <% for (var s = 0; s < 5; s++) { %>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <% } %>
+          </div>
+          <p class="lp-testimonial__text">"<%= t('home_testimonial_' + rev + '_text') %>"</p>
+          <footer class="lp-testimonial__author">
+            <span class="lp-testimonial__avatar" aria-hidden="true"><%= t('home_testimonial_' + rev + '_author').charAt(0) %></span>
+            <cite>
+              <span class="lp-testimonial__name"><%= t('home_testimonial_' + rev + '_author') %></span>
+              <span class="lp-testimonial__role"><%= t('home_testimonial_' + rev + '_role') %></span>
+            </cite>
+          </footer>
+        </blockquote>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="lp-section lp-section--alt" id="faq" aria-labelledby="faq-title">
+    <div class="lp-container lp-container--narrow">
+      <header class="lp-section__head lp-section__head--center" data-reveal>
+        <p class="lp-badge lp-badge--muted"><%= t('home_faq_badge') %></p>
+        <h2 id="faq-title" class="lp-section__title"><%= t('home_faq_title') %></h2>
+      </header>
+      <div class="lp-faq" data-faq>
+        <% for (var faq = 1; faq <= 5; faq++) { %>
+        <details class="lp-faq__item" data-reveal data-reveal-delay="<%= faq %>">
+          <summary class="lp-faq__q"><%= t('home_faq_' + faq + '_q') %></summary>
+          <div class="lp-faq__a"><p><%= t('home_faq_' + faq + '_a') %></p></div>
+        </details>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="lp-cta" id="cta" aria-labelledby="cta-title">
+    <div class="lp-cta__glow" aria-hidden="true"></div>
+    <div class="lp-container lp-cta__inner" data-reveal>
+      <h2 id="cta-title" class="lp-cta__title"><%= t('home_cta_title') %></h2>
+      <p class="lp-cta__lead"><%= t('home_cta_lead') %></p>
+      <div class="lp-cta__actions">
+        <a class="lp-btn lp-btn--primary lp-btn--lg" href="<%= playUrl %>" target="_blank" rel="noopener noreferrer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85A1.5 1.5 0 0 1 3 20.5zm13.81-5.38l6.42 3.54c.54.3 1.23.09 1.5-.45a10.1 10.1 0 0 0 0-9.42c-.27-.54-.96-.75-1.5-.45l-6.42 3.54zm-1.62-3.12L3.84 4.65A1.49 1.49 0 0 1 5.69 3l9.12 5.01-1.62 2.99z"/></svg>
+          <%= t('home_cta_btn') %>
+        </a>
+        <a class="lp-btn lp-btn--ghost" href="<%= appUrl('/review') %>"><%= t('home_btn_review') %></a>
+        <a class="lp-btn lp-btn--ghost" href="<%= appUrl('/ask') %>"><%= t('home_btn_ask') %></a>
+      </div>
+    </div>
+  </section>
+
+</div>
