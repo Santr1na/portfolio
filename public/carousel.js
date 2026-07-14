@@ -1,17 +1,15 @@
 (function () {
   var root = document.querySelector("[data-carousel]");
   if (!root) return;
-  var slideLabelPrefix = (root.getAttribute("data-carousel-slide-prefix") || "Slide ").trim();
   var track = root.querySelector(".carousel-track");
   var slides = track ? [].slice.call(track.children) : [];
   var prev = root.querySelector(".carousel-prev");
   var next = root.querySelector(".carousel-next");
-  var segmentsWrap = root.querySelector(".carousel-segments");
   var captionEl = root.querySelector("#carousel-caption");
   var counterEl = root.querySelector("#carousel-counter");
   var progressFill = root.querySelector("#carousel-progress-fill");
   var viewport = root.querySelector("[data-carousel-viewport]");
-  if (!slides.length || !prev || !next || !segmentsWrap) return;
+  if (!slides.length || !prev || !next) return;
 
   var i = 0;
   var total = slides.length;
@@ -55,13 +53,6 @@
     });
   }
 
-  function updateSegments() {
-    [].forEach.call(segmentsWrap.querySelectorAll("button"), function (b, j) {
-      b.setAttribute("aria-current", j === i ? "true" : "false");
-      b.setAttribute("tabindex", j === i ? "0" : "-1");
-    });
-  }
-
   function updateCounter() {
     if (!counterEl) return;
     var cur = String(i + 1).padStart(2, "0");
@@ -86,22 +77,9 @@
     applyTransform();
     setCaption();
     setActiveSlide();
-    updateSegments();
     updateCounter();
     updateProgress();
   }
-
-  slides.forEach(function (_, j) {
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "carousel-seg";
-    b.setAttribute("role", "tab");
-    b.setAttribute("aria-label", slideLabelPrefix + (j + 1));
-    b.addEventListener("click", function () {
-      go(j);
-    });
-    segmentsWrap.appendChild(b);
-  });
 
   prev.addEventListener("click", function () {
     go(i - 1);
