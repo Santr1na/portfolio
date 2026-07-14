@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= typeof htmlLang !== 'undefined' ? htmlLang : 'en' %>">
+<html lang="<%= typeof htmlLang !== 'undefined' ? htmlLang : 'ru' %>">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,9 +33,6 @@
 <body class="<%= typeof isHome !== 'undefined' && isHome ? 'is-landing' : '' %>">
 <div class="ambient" aria-hidden="true"></div>
 <div class="ambient-glow" aria-hidden="true"></div>
-<% if (typeof isHome !== 'undefined' && isHome) { %>
-<div class="lp-cursor" aria-hidden="true" data-lp-cursor><div class="lp-cursor__dot"></div><div class="lp-cursor__ring"></div></div>
-<% } %>
 
 <header class="topbar<%= typeof isHome !== 'undefined' && isHome ? ' topbar--landing' : '' %>" data-landing-nav>
   <div class="topbar-inner">
@@ -143,9 +140,9 @@
     <div class="lp-container lp-footer__bottom-inner">
       <p class="lp-footer__copy"><%= t('footer_copyright') %></p>
       <div class="lang-switch" role="navigation" aria-label="<%= t('lang_nav_aria') %>">
-        <a href="<%= pageUrl('en', typeof langSwitcherPath !== 'undefined' ? langSwitcherPath : (path || '/')) %>" class="<%= lang === 'en' ? 'is-active' : '' %>">English</a>
-        <span class="lang-switch-sep" aria-hidden="true">·</span>
         <a href="<%= pageUrl('ru', typeof langSwitcherPath !== 'undefined' ? langSwitcherPath : (path || '/')) %>" class="<%= lang === 'ru' ? 'is-active' : '' %>">Русский</a>
+        <span class="lang-switch-sep" aria-hidden="true">·</span>
+        <a href="<%= pageUrl('en', typeof langSwitcherPath !== 'undefined' ? langSwitcherPath : (path || '/')) %>" class="<%= lang === 'en' ? 'is-active' : '' %>">English</a>
       </div>
     </div>
   </div>
@@ -159,9 +156,9 @@
       <a href="<%= playUrl %>" target="_blank" rel="noopener noreferrer"><%= t('footer_play') %></a>
     </div>
     <div class="lang-switch" role="navigation" aria-label="<%= t('lang_nav_aria') %>">
-      <a href="<%= pageUrl('en', typeof langSwitcherPath !== 'undefined' ? langSwitcherPath : (path || '/')) %>" class="<%= lang === 'en' ? 'is-active' : '' %>">English</a>
-      <span class="lang-switch-sep" aria-hidden="true">·</span>
       <a href="<%= pageUrl('ru', typeof langSwitcherPath !== 'undefined' ? langSwitcherPath : (path || '/')) %>" class="<%= lang === 'ru' ? 'is-active' : '' %>">Русский</a>
+      <span class="lang-switch-sep" aria-hidden="true">·</span>
+      <a href="<%= pageUrl('en', typeof langSwitcherPath !== 'undefined' ? langSwitcherPath : (path || '/')) %>" class="<%= lang === 'en' ? 'is-active' : '' %>">English</a>
     </div>
   </div>
 </footer>

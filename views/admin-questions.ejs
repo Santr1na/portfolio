@@ -38,7 +38,7 @@
     </form>
 
     <% if (q.status === 'published' && q.slug) { %>
-    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="<%= pageUrl('en', '/q/' + q.slug) %>"><%= t('admin_open_public') %></a></p>
+    <p class="admin-actions"><a class="btn btn-ghost btn-sm" href="<%= pageUrl('ru', '/q/' + q.slug) %>"><%= t('admin_open_public') %></a></p>
     <% } else if (String(q.answer || '').trim()) { %>
     <form method="post" action="<%= appUrl('/admin/questions/' + q.id + '/publish') %>" class="inline-form admin-publish-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">

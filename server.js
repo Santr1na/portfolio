@@ -243,7 +243,7 @@ function attachPublicLocales(lang) {
 
 function attachAdminLocales(req, res, next) {
   res.locals.lang = i18n.DEFAULT_LOCALE;
-  res.locals.htmlLang = "en";
+  res.locals.htmlLang = i18n.DEFAULT_LOCALE === "ru" ? "ru" : "en";
   res.locals.t = (k) => i18n.t(i18n.DEFAULT_LOCALE, k);
   res.locals.path = req.path;
   res.locals.langSwitcherPath = "/";
@@ -447,8 +447,8 @@ app.get("/health", (req, res) => {
   res.type("text").send("ok");
 });
 
-app.use(createPublicRouter("en"));
-app.use("/ru", createPublicRouter("ru"));
+app.use(createPublicRouter("ru"));
+app.use("/en", createPublicRouter("en"));
 
 const adminRouter = express.Router();
 adminRouter.use(attachAdminLocales);
@@ -560,7 +560,7 @@ if (APP_BASE) {
 function attachErrorLocals(req, res, next) {
   if (!res.locals.t) {
     res.locals.lang = i18n.DEFAULT_LOCALE;
-    res.locals.htmlLang = "en";
+    res.locals.htmlLang = i18n.DEFAULT_LOCALE === "ru" ? "ru" : "en";
     res.locals.t = (k) => i18n.t(i18n.DEFAULT_LOCALE, k);
     res.locals.path = req.path;
     res.locals.langSwitcherPath = "/";
@@ -584,7 +584,7 @@ app.use((err, req, res, next) => {
   console.error(err);
   if (!res.locals.t) {
     res.locals.lang = i18n.DEFAULT_LOCALE;
-    res.locals.htmlLang = "en";
+    res.locals.htmlLang = i18n.DEFAULT_LOCALE === "ru" ? "ru" : "en";
     res.locals.t = (k) => i18n.t(i18n.DEFAULT_LOCALE, k);
     res.locals.path = req.path;
     res.locals.langSwitcherPath = "/";

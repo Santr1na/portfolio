@@ -2,7 +2,6 @@
   "use strict";
 
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var finePointer = window.matchMedia("(pointer: fine)").matches;
 
   /* ── Scroll reveal ── */
   var revealEls = document.querySelectorAll("[data-reveal]");
@@ -132,63 +131,6 @@
       btn.style.setProperty("--y", ((e.clientY - rect.top) / rect.height) * 100 + "%");
     });
   });
-
-  /* ── Custom cursor ── */
-  var cursor = document.querySelector("[data-lp-cursor]");
-  if (cursor && finePointer && !reducedMotion) {
-    document.body.classList.add("has-custom-cursor");
-    var ringX = 0;
-    var ringY = 0;
-    var dotX = 0;
-    var dotY = 0;
-    var mouseX = 0;
-    var mouseY = 0;
-    var visible = false;
-
-    document.addEventListener(
-      "mousemove",
-      function (e) {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        if (!visible) {
-          cursor.classList.add("is-visible");
-          visible = true;
-        }
-      },
-      { passive: true }
-    );
-
-    document.addEventListener("mouseleave", function () {
-      cursor.classList.remove("is-visible");
-      visible = false;
-    });
-
-    var hoverables = "a, button, .lp-card, .lp-feature-card, .lp-testimonial, summary";
-    document.addEventListener("mouseover", function (e) {
-      if (e.target.closest(hoverables)) {
-        cursor.classList.add("is-hover");
-      }
-    });
-    document.addEventListener("mouseout", function (e) {
-      if (e.target.closest(hoverables)) {
-        cursor.classList.remove("is-hover");
-      }
-    });
-
-    function animateCursor() {
-      dotX += (mouseX - dotX) * 0.35;
-      dotY += (mouseY - dotY) * 0.35;
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
-      cursor.style.transform = "translate(" + ringX + "px, " + ringY + "px)";
-      var dot = cursor.querySelector(".lp-cursor__dot");
-      if (dot) {
-        dot.style.transform = "translate(" + (dotX - ringX) + "px, " + (dotY - ringY) + "px)";
-      }
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-  }
 
   /* ── FAQ: close others when one opens ── */
   var faq = document.querySelector("[data-faq]");
